@@ -1,6 +1,4 @@
-#include <bson.h>
-#include <bcon.h>
-#include <mongoc.h>
+#include "../utils/includes.h"
 #include "./login_server.h"
 
 /*
@@ -13,23 +11,10 @@
 */
 
 // Inserts user into mongodb
-int signup(char * name, char * username, char * password){
-    mongoc_client_t *mongoClient;
-	mongoc_database_t *database;
-	mongoc_collection_t *collection;
+int signup(char * name, char * username, char * password, MongoConnection mongoConnection){
     bson_t *document;
 	bson_error_t error;
     int exitCode;
-
-    // Required to initialize libmongoc's internals
-    mongoc_init();
-
-    // Create a new client instance
-    mongoClient = mongoc_client_new("mongodb://localhost:27017");
-
-    // Get a handle on the database "db_name" and collection "coll_name"
-    database = mongoc_client_get_database(mongoClient, "pnp");
-    collection = mongoc_client_get_collection(mongoClient, "pnp", "users");
 
     // Create user bson
     document = bson_new ();
@@ -38,12 +23,12 @@ int signup(char * name, char * username, char * password){
     BSON_APPEND_UTF8(document, "password", password);
 
     // Insert user
-    if (!mongoc_collection_insert(collection, MONGOC_INSERT_NONE, document, NULL, &error)) {
+    if (!mongoc_collection_insert(mongoConnection.users, MONGOC_INSERT_NONE, document, NULL, &error)) {
         // To specify that username is not unique
         if(error.code == 11000){
             exitCode = -2;
         }
-        fprintf(stderr, "%d\n", error.message);
+        fprintf(stderr, "%s\n", error.message);
         // gen return on error
         exitCode = -1;
     } else {
@@ -52,12 +37,6 @@ int signup(char * name, char * username, char * password){
     }
 
 	bson_destroy(document);
-
-    // Release our handles and clean up libmongoc
-	mongoc_collection_destroy(collection);
-	mongoc_database_destroy(database);
-	mongoc_client_destroy(mongoClient);
-	mongoc_cleanup();
 
 	return exitCode;
 }

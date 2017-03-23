@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include "./includes.h"
 #include "./utils.h"
 
 // Genrates a random string of sepcified length

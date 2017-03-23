@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+#include "./includes.h"
 #include "./utils.h"
 
 // Spilits string using a delimter
