@@ -27,10 +27,11 @@ int signup(char * name, char * username, char * password, MongoConnection mongoC
         // To specify that username is not unique
         if(error.code == 11000){
             exitCode = -2;
+        } else {
+            fprintf(stderr, "%s\n", error.message);
+            // gen return on error
+            exitCode = -1;
         }
-        fprintf(stderr, "%s\n", error.message);
-        // gen return on error
-        exitCode = -1;
     } else {
         // Every thing is fine
         exitCode = 0;

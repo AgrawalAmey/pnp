@@ -7,13 +7,17 @@ int main(){
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //                           Init Mongo server
+    //                           Init databse connections
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    MongoConnection mongoConnection;
 
+    // Mongo
+    MongoConnection mongoConnection;
     connectToMongo(&mongoConnection);
 
+    // Redis
+    redisContext * redisConnection;
+    connectToRedis(redisConnection);
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -26,12 +30,6 @@ int main(){
     struct sockaddr_in serverAddr;
     struct sockaddr_storage serverStorage;
     socklen_t addr_size;
-    char * sessionKey[25];
-    char ** userDetails;
-    int insertResult;
-    int identityVerified;
-    int enable = 1;
-
 
     /*---- Create the socket. The three arguments are: ----*/
     /* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
@@ -76,6 +74,12 @@ int main(){
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    char ** userDetails;
+    int insertResult;
+    int identityVerified;
+    int enable = 1;
+    char sessionKey[16];
+
     while(! listen(welcomeSocket, 100))
     {
         if((newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size)) < 0){
@@ -104,6 +108,7 @@ int main(){
                 strcpy(outBuffer, "Username already exists.");
             }
 
+
             send(newSocket, outBuffer, 1024, 0);
 
             close(newSocket);
@@ -129,10 +134,16 @@ int main(){
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //                          Distroy mongo connection
+    //                          Distroy database connections
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    // Mongo
     endMongoConnection(&mongoConnection);
+
+    // Redis
+    endRedisConnection(redisConnection);
+
+    // Exit
     return 0;
 }
