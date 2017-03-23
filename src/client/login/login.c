@@ -12,7 +12,10 @@ int login(){
     char inBuffer[1024], outBuffer[1024];
     struct sockaddr_in serverAddr;
     socklen_t addr_size;
-    char name[20], username[20], password[20];
+    char name[20], username[20], password[20], preference[20];
+    //set option y if user wants to register
+    char option = 'n';
+
     /*---- Create the socket. The three arguments are: ----*/
     /* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
     clientSocket = socket(PF_INET, SOCK_STREAM, 0);
@@ -29,10 +32,25 @@ int login(){
 
     /*---- Connect the socket to the server using the address struct ----*/
     addr_size = sizeof serverAddr;
-    connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
+    if (connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size) < 0){
+        printf("Error in connecting to the server.\n");
+        return 0;
+    }
 
     /*---- Get username and password ----*/
     printf("Welcome to PNP\n");
+
+    printf("Are you already registered on pnp? (y/n)\n");
+    scanf("%c",&option);
+
+    if (option == 'n')
+    {
+        strcpy(preference, "signup");
+    }
+    else if (option == 'y')
+    {
+        strcpy(preference, "login");
+    }
 
     printf("Enter your name:");
     scanf("%s", name);
@@ -42,11 +60,15 @@ int login(){
     scanf("%s", password);
 
     // Send username and password
-    strcpy(outBuffer, name);
+    strcpy(outBuffer, preference);
+    strcat(outBuffer, " ");
+    strcat(outBuffer, name);
     strcat(outBuffer, " ");
     strcat(outBuffer, username);
     strcat(outBuffer, " ");
     strcat(outBuffer, password);
+
+    printf("Sending data: %s\n", outBuffer);
 
     // While making gui keep ensure that all the feilds are non-empty else
     // server will break

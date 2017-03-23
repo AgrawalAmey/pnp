@@ -29,11 +29,19 @@ int main(){
     char * sessionKey[25];
     char ** userDetails;
     int insertResult;
+    int identityVerified;
+    int enable = 1;
 
 
     /*---- Create the socket. The three arguments are: ----*/
     /* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
     welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
+
+    /*make the port reusable*/
+    if (setsockopt(welcomeSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0){
+        printf("There was an error in hosting the server.\n");
+        exit(1);
+    }
 
     /*---- Configure settings of the server address struct ----*/
     /* Address family = Internet */
@@ -45,8 +53,12 @@ int main(){
     /* Set all bits of the padding field to 0 */
     memset(serverAddr.sin_zero, '\0', sizeof(serverAddr.sin_zero));
 
+
     /*---- Bind the address struct to the socket ----*/
-    bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
+    if (bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1){
+        printf("There was an error in hosting the server.\n");
+        exit(1);
+    }
 
     /*---- Listen on the socket, with 100 max connection requests queued ----*/
     if(listen(welcomeSocket, 100)==0)
@@ -64,28 +76,56 @@ int main(){
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
+    while(! listen(welcomeSocket, 100))
+    {
+        if((newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size)) < 0){
+            printf("Error in accepting connection!\n");
+            exit(1);
+        }
 
-    /*---- Recieve username and password ----*/
+        /*---- Recieve username and password ----*/
 
-    recv(newSocket, inBuffer, 1024, 0);
+        recv(newSocket, inBuffer, 1024, 0);
 
-    printf("%s\n", inBuffer);
+        printf("%s\n", inBuffer);
 
-    userDetails = strSplit(inBuffer, ' ');
+        userDetails = strSplit(inBuffer, ' ');
 
-    insertResult = signup(userDetails[0], userDetails[1], userDetails[2], mongoConnection);
+        if (strcmp(userDetails[0], "signup") == 0)
+        {
+            insertResult = signup(userDetails[1], userDetails[2], userDetails[3], mongoConnection);
 
-    /*---- Send appropriate message ----*/
-    if(insertResult == 0){
-        strcpy(outBuffer, "Signed up succesfully!");
-    } else if(insertResult == -1){
-        strcpy(outBuffer, "Sorry! Something went wrong.");
-    } else {
-        strcpy(outBuffer, "Username already exists.");
+            /*---- Send appropriate message ----*/
+            if(insertResult == 0){
+                strcpy(outBuffer, "Signed up succesfully!");
+            } else if(insertResult == -1){
+                strcpy(outBuffer, "Sorry! Something went wrong.");
+            } else {
+                strcpy(outBuffer, "Username already exists.");
+            }
+
+            send(newSocket, outBuffer, 1024, 0);
+
+            close(newSocket);
+        }
+        else if (strcmp(userDetails[0], "login") == 0)
+        {
+            identityVerified = login(userDetails[2], userDetails[3],mongoConnection);
+
+            /*---- Send appropriate message ----*/
+            if (identityVerified == 0){
+                strcpy(outBuffer, "Logged in succesfully!");
+            }
+            else if(identityVerified == -1){
+                strcpy(outBuffer, "Username and/or password Incorrect. Please try again!");
+            }
+
+            send(newSocket, outBuffer, 1024, 0);
+
+            close(newSocket);
+        }
+
     }
-
-    send(newSocket, outBuffer, 1024, 0);
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
