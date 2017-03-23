@@ -39,7 +39,7 @@ int main(){
 
     /*make the port reusable*/
     if (setsockopt(welcomeSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0){
-        printf("There was an error in hosting the server.\n");
+        printf("setsockopt: There was an error in hosting the server.\n");
         exit(1);
     }
 
@@ -47,7 +47,7 @@ int main(){
     /* Address family = Internet */
     serverAddr.sin_family = AF_INET;
     /* Set port number, using htons function to use proper byte order */
-    serverAddr.sin_port = htons(9090);
+    serverAddr.sin_port = htons(9091);
     /* Set IP address to localhost */
     serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
     /* Set all bits of the padding field to 0 */
@@ -56,7 +56,7 @@ int main(){
 
     /*---- Bind the address struct to the socket ----*/
     if (bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1){
-        printf("There was an error in hosting the server.\n");
+        printf("bind: There was an error in hosting the server.\n");
         exit(1);
     }
 

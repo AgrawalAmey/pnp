@@ -14,4 +14,7 @@ void connectToMongo(MongoConnection *connection);
 // End mongo connection
 void endMongoConnection(MongoConnection *connection);
 
+//hash password
+char * hash(char * password);
+
 #endif // UTILS
