@@ -53,7 +53,7 @@ int main(){
 
     userDetails = strSplit(inBuffer, ' ');
 
-    insertResult = insertUser(userDetails[0], userDetails[1], userDetails[2]);
+    insertResult = signup(userDetails[0], userDetails[1], userDetails[2]);
 
     /*---- Send appropriate message ----*/
     if(insertResult == 0){
