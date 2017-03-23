@@ -1,20 +1,19 @@
 # Master build file
 # To be replaced by Cmake
 
-CFLAGS = -g -Wall -Wextra $(shell pkg-config --cflags libmongoc-1.0)
-
-LDFLAGS = $(shell pkg-config --libs libmongoc-1.0)
-
 client:
 	gcc ../src/client/login/login.c \
 	../src/client/index.c \
 	-o client.exe
 
 login_server:
-	gcc $(CFLAGS) \
-	$(LDFLAGS) \
+	gcc ../src/utils/mongo.c \
 	../src/utils/rand.c \
 	../src/utils/split_string.c \
 	../src/login_server/index.c \
 	../src/login_server/signup.c \
+	../src/login_server/login.c \
+	-I/usr/local/include/libmongoc-1.0 \
+	-I/usr/local/include/libbson-1.0 \
+	-L/usr/local/lib -lmongoc-1.0 -lsasl2 -lssl -lcrypto -lrt -lbson-1.0 \
 	-o server.exe
