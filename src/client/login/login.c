@@ -1,9 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include "./../../utils/includes.h"
+#include "./../../utils/utils.h"
 #include "./login.h"
 
 // Performs login
@@ -24,7 +20,7 @@ int login(){
     /* Address family = Internet */
     serverAddr.sin_family = AF_INET;
     /* Set port number, using htons function to use proper byte order */
-    serverAddr.sin_port = htons(9090);
+    serverAddr.sin_port = htons(9091);
     /* Set IP address to localhost */
     serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
     /* Set all bits of the padding field to 0 */
@@ -66,7 +62,7 @@ int login(){
     strcat(outBuffer, " ");
     strcat(outBuffer, username);
     strcat(outBuffer, " ");
-    strcat(outBuffer, password);
+    strcat(outBuffer, hash(password));
 
     printf("Sending data: %s\n", outBuffer);
 

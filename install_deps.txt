@@ -36,7 +36,7 @@ make test
 sudo make install
 
 # Hiredis
-https://github.com/redis/hiredis/archive/v0.13.3.tar.gz
+wget https://github.com/redis/hiredis/archive/v0.13.3.tar.gz
 tar xzf hiredis-0.13.3.tar.gz
 cd hiredis-0.13.3
 make

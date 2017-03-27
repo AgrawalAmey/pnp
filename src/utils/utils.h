@@ -20,4 +20,7 @@ void connectToRedis(redisContext *c);
 // End redis connection
 void endRedisConnection(redisContext *c);
 
+//hash password
+char * hash(char * password);
+
 #endif // UTILS
