@@ -8,6 +8,7 @@ client:
 
 login_server:
 	gcc ../src/utils/mongo.c \
+	../src/utils/redis.c \
 	../src/utils/rand.c \
 	../src/utils/split_string.c \
 	../src/login_server/index.c \

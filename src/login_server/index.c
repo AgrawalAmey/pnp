@@ -29,6 +29,7 @@ int main(){
     struct sockaddr_in serverAddr;
     struct sockaddr_storage serverStorage;
     socklen_t addr_size;
+    int enable;
 
     /*---- Create the socket. The three arguments are: ----*/
     /* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
@@ -76,7 +77,6 @@ int main(){
     char ** userDetails;
     int insertResult;
     int identityVerified;
-    int enable = 1;
     char sessionKey[16];
 
     while(! listen(welcomeSocket, 100))

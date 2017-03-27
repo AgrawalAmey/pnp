@@ -14,4 +14,10 @@ void connectToMongo(MongoConnection *connection);
 // End mongo connection
 void endMongoConnection(MongoConnection *connection);
 
+// Setup redis connection
+void connectToRedis(redisContext *c);
+
+// End redis connection
+void endRedisConnection(redisContext *c);
+
 #endif // UTILS
