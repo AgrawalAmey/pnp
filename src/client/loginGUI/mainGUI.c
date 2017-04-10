@@ -133,14 +133,11 @@ int main(int argc, char const *argv[])
 	SDL_Surface *message1 = NULL;
 	SDL_Surface *message2 = NULL;
 	SDL_Surface *message3 = NULL;
-	// SDL_Event event;
-	// TTF_Font * font = NULL;
-	// SDL_Color textColor = { 0xFF, 0xFF, 0xFF };
+
 	struct stringInput * name = (struct stringInput *) malloc (sizeof(struct stringInput));
 	name->text == NULL;
 	memset(name->str,'\0',20);
 	int nameEntered = 0;
-
 
 	struct stringInput * pwd = (struct stringInput *) malloc (sizeof(struct stringInput));
 	pwd->text == NULL;
@@ -159,7 +156,6 @@ int main(int argc, char const *argv[])
 	welcome = load_image( "./../../../data/GUI/pokelogo.bmp" );
 	
 	message1 = TTF_RenderText_Solid( font, "Welcome to Pokemon MMORPG !!!", textColor );
-	
 	message2 = TTF_RenderText_Solid( font, "Enter your username:", textColor );
 
 	//update Screen
@@ -187,10 +183,9 @@ int main(int argc, char const *argv[])
                     SDL_FreeSurface( message2 );
                     //Change the message
                     message2 = TTF_RenderText_Solid( font, "Connecting to the serever...", textColor );
+                    quit = 1;
                 }
             }
-
-
         	if( nameEntered == 0 )
             {
                 //Get user input
@@ -209,8 +204,6 @@ int main(int argc, char const *argv[])
                     message2 = TTF_RenderText_Solid( font, "Enter your password:", textColor );
                 }
             }
-
-            
             //If the user has Xed out the window
             if( event.type == SDL_QUIT )
             {
@@ -229,7 +222,7 @@ int main(int argc, char const *argv[])
 	    }
 	    if( pwd->text != NULL )
 	    {
-	        //Show the name
+	        //Show the pwd
 	        apply_surface( ( SCREEN_WIDTH - (pwd->text)->w ) / 2, ( SCREEN_HEIGHT - (pwd->text)->h ) / 2, pwd->text, screen );
 	    }
         if( SDL_Flip( screen ) == -1 )
@@ -238,6 +231,8 @@ int main(int argc, char const *argv[])
         }
 
     }
+
+    sleep(5);
 
 	//free the loaded image
 	SDL_FreeSurface (welcome);
