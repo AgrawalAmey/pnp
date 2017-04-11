@@ -3,14 +3,15 @@
 #include "./login.h"
 
 // Performs login
-int login(){
+int login(char * preference, char * name, char * username, char * password){
+    // printf("%s %s %s %s\n", preference, name, username, password);
     int clientSocket;
     char inBuffer[1024], outBuffer[1024];
     struct sockaddr_in serverAddr;
     socklen_t addr_size;
-    char name[20], username[20], password[20], preference[20];
+    // char name[20], username[20], password[20], preference[20];
     //set option y if user wants to register
-    char option = 'n';
+    // char option = 'n';
 
     /*---- Create the socket. The three arguments are: ----*/
     /* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
@@ -33,27 +34,27 @@ int login(){
         return 0;
     }
 
-    /*---- Get username and password ----*/
-    printf("Welcome to PNP\n");
+    // /*---- Get username and password ----*/
+    // printf("Welcome to PNP\n");
 
-    printf("Are you already registered on pnp? (y/n)\n");
-    scanf("%c",&option);
+    // printf("Are you already registered on pnp? (y/n)\n");
+    // scanf("%c",&option);
 
-    if (option == 'n')
-    {
-        strcpy(preference, "signup");
-    }
-    else if (option == 'y')
-    {
-        strcpy(preference, "login");
-    }
+    // if (option == 'n')
+    // {
+    //     strcpy(preference, "signup");
+    // }
+    // else if (option == 'y')
+    // {
+    //     strcpy(preference, "login");
+    // }
 
-    printf("Enter your name:");
-    scanf("%s", name);
-    printf("Enter username:");
-    scanf("%s", username);
-    printf("Enter password:");
-    scanf("%s", password);
+    // printf("Enter your name:");
+    // scanf("%s", name);
+    // printf("Enter username:");
+    // scanf("%s", username);
+    // printf("Enter password:");
+    // scanf("%s", password);
 
     // Send username and password
     strcpy(outBuffer, preference);
@@ -73,7 +74,14 @@ int login(){
     /*---- Read the message from the server into the buffer ----*/
     recv(clientSocket, inBuffer, 1024, 0);
 
-    printf("%s\n", inBuffer);
+    if (strcmp(inBuffer, "Logged in succesfully!") == 0)
+    {
+        return 1;
+    }
+    else if (strcmp(inBuffer, "Username and/or password Incorrect. Please try again!"))
+    {
+        return 0;
+    }
 
-    return 0;
+    // printf("%s\n", inBuffer);
 }

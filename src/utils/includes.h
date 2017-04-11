@@ -13,7 +13,7 @@
 #include <bson.h>
 #include <bcon.h>
 #include <mongoc.h>
-#include <hiredis.h>
+#include "hiredis.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
