@@ -3,6 +3,6 @@
 #define CLIENT_LOGIN
 
 // Performs login
-int login();
+int login(char * preference, char * name, char * username, char * password);
 
 #endif // CLIENT_LOGIN
