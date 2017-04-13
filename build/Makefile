@@ -5,7 +5,7 @@ client:
 	gcc ../src/client/login/login.c \
 	../src/utils/hash.c \
 	../src/client/index.c \
-	-D_GNU_SOURCE=1 -D_REENTRANT -I/usr/include/SDL -lSDL -lSDL_image -lSDL_ttf \
+	-D_GNU_SOURCE=1 -D_REENTRANT -I/usr/include/SDL -lSDL -lSDL_image -lSDL_ttf -lSDL_mixer \
 	-I/usr/local/include/libmongoc-1.0 \
 	-I/usr/local/include/libbson-1.0 \
 	-L/usr/local/lib -lmongoc-1.0 -lsasl2 -lssl -lcrypto -lrt -lbson-1.0 \

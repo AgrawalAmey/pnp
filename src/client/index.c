@@ -10,6 +10,15 @@ const int SCREEN_BPP = 32;
 // TTF_Font * font = NULL;
 // SDL_Color textColor = { 0xFF, 0xFF, 0xFF };
 
+struct clientInfo{
+
+};
+
+// struct background{
+//     int xl, yl, xh, yh; //rectangular coordinates of the are
+//     int texture; //texture number 1 default
+// };
+
 struct stringInput{
 	char str[20];
 	SDL_Surface * text;
@@ -124,6 +133,7 @@ int main(int argc, char const *argv[])
     SDL_Event event;
     TTF_Font * font = NULL;
     SDL_Color textColor = { 0xFF, 0xFF, 0xFF };
+    Mix_Music *music = NULL;
 
     char result[100]= {'\0'};
     int loginReturn;
@@ -149,14 +159,28 @@ int main(int argc, char const *argv[])
 	//start SDL
 	SDL_Init (SDL_INIT_EVERYTHING);
 	TTF_Init();
+    if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
+    {
+        printf("Error initializing music stream...\n");
+        return 0;
+    }
+
+    //Load the music
+    music = Mix_LoadMUS( "./../src/client/GUIGraphics/opening.wav" );
+    //If there was a problem loading the music
+    if( music == NULL )
+    {
+        printf("Error loading music...\n");
+        return 0;
+    }
 	//set up screen
 	screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE );
 	//Set the window caption
     SDL_WM_SetCaption( "Welcome to Pokemon MMORPG", NULL );
 
-    font = TTF_OpenFont( "./../data/GUI/fontb.ttf", 40 );
-	welcome = load_image( "./../data/GUI/pokelogo.bmp" );
-	
+    font = TTF_OpenFont( "./../src/client/GUIGraphics/fontb.ttf", 40 );
+	welcome = load_image( "./../src/client/GUIGraphics/pokelogo.bmp" );
+
     if (font == NULL || welcome == NULL)
     {
         printf("Error loading files....\n");
@@ -169,6 +193,12 @@ int main(int argc, char const *argv[])
 	//update Screen
 	SDL_Flip(screen);
 
+    if( Mix_PlayMusic( music, -1 ) == -1 )
+    {
+        printf("Error in playing music....\n");
+        return 1;
+    }
+
 	//While the user hasn't quit
     while( quit == 0 )
     {
@@ -176,7 +206,7 @@ int main(int argc, char const *argv[])
         while( SDL_PollEvent( &event ) )
         {
         	SDL_EnableUNICODE(1);
-        	
+
         	// if( 1 != 1)
         	if( pwdEntered == 0 && nameEntered == 1)
             {
@@ -263,22 +293,34 @@ int main(int argc, char const *argv[])
 	    SDL_FreeSurface( message1 );
 	    SDL_FreeSurface( message2 );
 	    SDL_FreeSurface( message3 );
+        Mix_FreeMusic( music );
 	    //Close the font that was used
 	    TTF_CloseFont( font );
 	    TTF_Quit();
 		SDL_Quit();
 		return 0;
     }
-
 	//free the loaded image
-	SDL_FreeSurface (welcome);
+    SDL_FreeSurface (welcome);
     SDL_FreeSurface( message1 );
     SDL_FreeSurface( message2 );
     SDL_FreeSurface( message3 );
-
     //Close the font that was used
     TTF_CloseFont( font );
 
+	printf("now I have to implement game graphics.\n");
+
+    if( SDL_Flip( screen ) == -1 )
+    {
+        return 1;
+    }
+
+    // SDL_Surface * gameScreen = NULL;
+    // gameScreen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE );
+    SDL_WM_SetCaption( "Start your quest in Pokemon MMORPG", NULL );
+    sleep(2);
+    // SDL_FreeSurface(gameScreen);
+    Mix_FreeMusic( music );
     TTF_Quit();
 	SDL_Quit();
 
