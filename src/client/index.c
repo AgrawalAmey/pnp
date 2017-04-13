@@ -179,7 +179,7 @@ int main(int argc, char const *argv[])
     SDL_WM_SetCaption( "Welcome to Pokemon MMORPG", NULL );
 
     font = TTF_OpenFont( "./../src/client/GUIGraphics/fontb.ttf", 40 );
-	welcome = load_image( "./../src/client/GUIGraphics/pokelogo.bmp" );
+	welcome = load_image( "./../src/client/GUIGraphics/pokelogo.jpg" );
 
     if (font == NULL || welcome == NULL)
     {
@@ -316,9 +316,12 @@ int main(int argc, char const *argv[])
     }
 
     // SDL_Surface * gameScreen = NULL;
-    // gameScreen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE );
+    screen = SDL_SetVideoMode( SCREEN_WIDTH + 160, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE );
     SDL_WM_SetCaption( "Start your quest in Pokemon MMORPG", NULL );
     sleep(2);
+
+
+
     // SDL_FreeSurface(gameScreen);
     Mix_FreeMusic( music );
     TTF_Quit();
