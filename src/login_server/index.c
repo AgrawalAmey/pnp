@@ -15,7 +15,8 @@ int main(){
     connectToMongo(&mongoConnection);
 
     // Redis
-    redisContext * redisConnection;
+    redisContext ** redisConnection;
+    redisConnection = (redisContext **)malloc(sizeof(*redisContext));
     connectToRedis(redisConnection);
 
     ////////////////////////////////////////////////////////////////////////////
@@ -45,9 +46,9 @@ int main(){
     /* Address family = Internet */
     serverAddr.sin_family = AF_INET;
     /* Set port number, using htons function to use proper byte order */
-    serverAddr.sin_port = htons(9091);
+    serverAddr.sin_port = htons(10000);
     /* Set IP address to localhost */
-    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    serverAddr.sin_addr.s_addr = inet_addr("0.0.0.0");
     /* Set all bits of the padding field to 0 */
     memset(serverAddr.sin_zero, '\0', sizeof(serverAddr.sin_zero));
 
@@ -96,32 +97,41 @@ int main(){
 
         if (strcmp(userDetails[0], "signup") == 0)
         {
+            // Type, name, username, password
             insertResult = signup(userDetails[1], userDetails[2], userDetails[3], mongoConnection);
 
             /*---- Send appropriate message ----*/
             if(insertResult == 0){
-                strcpy(outBuffer, "Signed up succesfully!");
+                strcpy(outBuffer, "success");
             } else if(insertResult == -1){
-                strcpy(outBuffer, "Sorry! Something went wrong.");
+                strcpy(outBuffer, "error");
             } else {
-                strcpy(outBuffer, "Username already exists.");
+                strcpy(outBuffer, "duplicate");
             }
-
 
             send(newSocket, outBuffer, 1024, 0);
 
             close(newSocket);
         }
         else if (strcmp(userDetails[0], "login") == 0)
-        {
-            identityVerified = login(userDetails[2], userDetails[3],mongoConnection);
+            // Type, name, username, password
+            identityVerified = login(userDetails[2], userDetails[3], mongoConnection);
 
             /*---- Send appropriate message ----*/
+            {
             if (identityVerified == 0){
-                strcpy(outBuffer, "Logged in succesfully!");
+                assignGameServer(userDetails[2], *redisConnection);
+                assignSessionKey(sessionKey, userDetails[2], *redisConnection);
+                strcpy(outBuffer, "success");
+                strcat(outBuffer, " ");
+                strcat(outBuffer, sessionKey);
+                strcat(outBuffer, " ");
+                strcat(outBuffer, "0.0.0.0");
+                strcat(outBuffer, " ");
+                strcat(outBuffer, "11000");
             }
             else if(identityVerified == -1){
-                strcpy(outBuffer, "Username and/or password Incorrect. Please try again!");
+                strcpy(outBuffer, "error");
             }
 
             send(newSocket, outBuffer, 1024, 0);
@@ -141,7 +151,7 @@ int main(){
     endMongoConnection(&mongoConnection);
 
     // Redis
-    endRedisConnection(redisConnection);
+    endRedisConnection(*redisConnection);
 
     // Exit
     return 0;

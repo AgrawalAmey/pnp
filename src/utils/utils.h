@@ -15,7 +15,7 @@ void connectToMongo(MongoConnection *connection);
 void endMongoConnection(MongoConnection *connection);
 
 // Setup redis connection
-void connectToRedis(redisContext *c);
+void connectToRedis(redisContext **c);
 
 // End redis connection
 void endRedisConnection(redisContext *c);

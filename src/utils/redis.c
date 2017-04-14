@@ -2,17 +2,17 @@
 #include "./utils.h"
 
 // Setup redis connection
-void connectToRedis(redisContext *c){
+void connectToRedis(redisContext **c){
     const char *hostname = "127.0.0.1";
     int port = 6379;
 
     struct timeval timeout = { 1, 500000 }; // 1.5 seconds
 
-    c = redisConnectWithTimeout(hostname, port, timeout);
-    if (c == NULL || c->err) {
-        if (c) {
-            printf("Connection error: %s\n", c->errstr);
-            redisFree(c);
+    *c = redisConnectWithTimeout(hostname, port, timeout);
+    if (*c == NULL || (**c).err) {
+        if (*c) {
+            printf("Connection error: %s\n", (**c).errstr);
+            redisFree(*c);
         } else {
             printf("Connection error: can't allocate redis context\n");
         }
