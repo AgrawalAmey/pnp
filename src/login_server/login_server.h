@@ -12,6 +12,6 @@ int login(char * username, char * password, MongoConnection mongoConnection);
 // Assign session key
 char * assignSessionKey(char * sessionKey, char * username, redisContext * redisConnection);
 
-char* assignGameServer(char * username, redisContext * redisConnection)
+char* assignGameServer(char * gameServerAddr, char * username, redisContext * redisConnection);
 
 #endif // LOGIN_SERVER

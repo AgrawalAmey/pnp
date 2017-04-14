@@ -16,7 +16,7 @@ int main(){
 
     // Redis
     redisContext ** redisConnection;
-    redisConnection = (redisContext **)malloc(sizeof(*redisContext));
+    redisConnection = (redisContext **)malloc(sizeof(redisContext *));
     connectToRedis(redisConnection);
 
     ////////////////////////////////////////////////////////////////////////////
@@ -79,6 +79,7 @@ int main(){
     int insertResult;
     int identityVerified;
     char sessionKey[16];
+    char gameServerAddr[30];
 
     while(! listen(welcomeSocket, 100))
     {
@@ -120,15 +121,14 @@ int main(){
             /*---- Send appropriate message ----*/
             {
             if (identityVerified == 0){
-                assignGameServer(userDetails[2], *redisConnection);
+                assignGameServer(gameServerAddr ,userDetails[2], *redisConnection);
                 assignSessionKey(sessionKey, userDetails[2], *redisConnection);
                 strcpy(outBuffer, "success");
                 strcat(outBuffer, " ");
                 strcat(outBuffer, sessionKey);
                 strcat(outBuffer, " ");
-                strcat(outBuffer, "0.0.0.0");
-                strcat(outBuffer, " ");
-                strcat(outBuffer, "11000");
+                strcat(outBuffer, gameServerAddr);
+
             }
             else if(identityVerified == -1){
                 strcpy(outBuffer, "error");
