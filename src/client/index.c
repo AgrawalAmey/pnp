@@ -179,7 +179,7 @@ int main(int argc, char const *argv[])
     SDL_WM_SetCaption( "Welcome to Pokemon MMORPG", NULL );
 
     font = TTF_OpenFont( "./../src/client/GUIGraphics/fontb.ttf", 40 );
-	welcome = load_image( "./../src/client/GUIGraphics/pokelogo.jpg" );
+	welcome = load_image( "./../src/client/GUIGraphics/pokelogo.bmp" );
 
     if (font == NULL || welcome == NULL)
     {

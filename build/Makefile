@@ -18,6 +18,8 @@ login_server:
 	../src/utils/rand.c \
 	../src/utils/split_string.c \
 	../src/login_server/index.c \
+	../src/login_server/load_balancer.c \
+	../src/login_server/session_key.c \
 	../src/login_server/signup.c \
 	../src/login_server/login.c \
 	-I/usr/local/include/libmongoc-1.0 \

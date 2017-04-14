@@ -9,6 +9,7 @@ char* assignSessionKey(char * sessionKey, char * username, redisContext * redisC
     // Get random string
     random_string(sessionKey, 16);
 
-    // Set the session key corrosponing to the user
-    redisCommand(redisConnection,"set sessions:%s %s", username, sessionKey);
+    // Set the session key corrosponing to the user with expiry of 5000 seconds
+    redisCommand(redisConnection,"set sessions:%s %s ex 5000", username, sessionKey);
+
 }
