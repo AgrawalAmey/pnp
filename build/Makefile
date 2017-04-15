@@ -17,7 +17,7 @@ client:
 	-o client.exe
 
 login_server:
-	gcc ../src/utils/mongo.c \
+	gcc -g ../src/utils/mongo.c \
 	../src/utils/redis.c \
 	../src/utils/rand.c \
 	../src/utils/split_string.c \
