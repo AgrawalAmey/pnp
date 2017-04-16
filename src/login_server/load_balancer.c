@@ -10,10 +10,10 @@ char* assignGameServer(char * username, redisContext * redisConnection){
     int i, minIndex, min = MAX_INT;
     redisReply *servers, keys;
 
-    servers = redisCommand(*redisConnection, "lrange servers 0 -1");
+    servers = redisCommand(redisConnection, "lrange servers 0 -1");
 
     for (i = 0; i < servers->elements; i++) {
-        keys = redisCommand(*redisConnection, "keys %d*", servers->element[j]->str);
+        keys = redisCommand(redisConnection, "keys %d*", servers->element[j]->str);
 
         if (keys->type == REDIS_REPLY_ARRAY) {
             if (min >= keys->elements){
@@ -23,6 +23,6 @@ char* assignGameServer(char * username, redisContext * redisConnection){
         }
     }
 
-    // Set the session key corrosponing to the user
-    redisCommand(redisConnection,"set servers:%s:%s 1 ex 5000", servers[minIndex], username);
+    // Set the server record with expiry
+    redisCommand(redisConnection,"set servers:%s:%s 1 ex 5000", servers->element[minIndex]->str, username);
 }
