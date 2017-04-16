@@ -3,14 +3,12 @@
 #include "./login.h"
 
 // Performs login
-char * login(char * preference, char * name, char * username, char * password){
+void login(char * inBuffer, char * preference, char * name, char * username, char * password){
     // printf("%s %s %s %s\n", preference, name, username, password);
     int clientSocket;
-    char *inBuffer, outBuffer[1024];
+    char outBuffer[1024];
     struct sockaddr_in serverAddr;
     socklen_t addr_size;
-
-    inBuffer = (char *)malloc(1024*sizeof(char));
 
     /*---- Create the socket. The three arguments are: ----*/
     /* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
@@ -30,7 +28,7 @@ char * login(char * preference, char * name, char * username, char * password){
     addr_size = sizeof serverAddr;
     if (connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size) < 0){
         printf("Error in connecting to the server.\n");
-        return 0;
+        exit(1);
     }
 
     // Send username and password
@@ -50,6 +48,4 @@ char * login(char * preference, char * name, char * username, char * password){
 
     /*---- Read the message from the server into the buffer ----*/
     recv(clientSocket, inBuffer, 1024, 0);
-
-    return inBuffer;
 }

@@ -6,6 +6,81 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 const int SCREEN_BPP = 32;
+const int SPRITE_SIZE = 32;
+
+
+/* source and destination rectangles */
+SDL_Rect rcSrc, rcSprite;
+int xGlobal, yGlobal;
+int gameover = 0;
+
+void HandleEvent(SDL_Event event)
+{
+    switch (event.type) {
+        /* close button clicked */
+        case SDL_QUIT:
+            gameover = 1;
+            break;
+            
+        /* handle the keyboard */
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE:
+                case SDLK_q:
+                    gameover = 1;
+                    break;
+                case SDLK_LEFT:
+                    if ( rcSrc.x == 192 )
+                        rcSrc.x = 224;
+                    else
+                        rcSrc.x = 192;
+                    rcSprite.x -= 5;
+                    if (xGlobal - rcSprite.x >= 160)
+                    {
+                        xGlobal = xGlobal - 160 + rcSprite.x;
+                    }
+                    break;
+                case SDLK_RIGHT:
+                    if ( rcSrc.x == 64 )
+                        rcSrc.x = 96;
+                    else
+                        rcSrc.x = 64;
+                    rcSprite.x += 5;
+                    if (rcSprite.x - xGlobal >= 160)
+                    {
+                        xGlobal = xGlobal - 480 + rcSprite.x;
+                    }
+                    break;
+                case SDLK_UP:
+                    if ( rcSrc.x == 0 )
+                        rcSrc.x = 32;
+                    else
+                        rcSrc.x = 0;
+                    rcSprite.y -= 5;
+                    break;
+                case SDLK_DOWN:
+                    if ( rcSrc.x == 128 )
+                        rcSrc.x = 160;
+                    else
+                        rcSrc.x = 128;
+                    rcSprite.y += 5;
+                    break;
+            }
+            break;
+    }
+}
+// SDL_Event event;
+// TTF_Font * font = NULL;
+// SDL_Color textColor = { 0xFF, 0xFF, 0xFF };
+
+struct clientInfo{
+
+};
+
+// struct background{
+//     int xl, yl, xh, yh; //rectangular coordinates of the are
+//     int texture; //texture number 1 default
+// };
 
 //the main loop on the client side
 //handles all the keyboard event
@@ -136,14 +211,19 @@ int main(int argc, char const *argv[])
             }
             if( nameEntered == 0 )
             {
+                //Get user input
                 handle_input(name, event, font, textColor);
-                if((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_RETURN))
+                //If the enter key was pressed
+                if( ( event.type == SDL_KEYDOWN ) && ( event.key.keysym.sym == SDLK_RETURN ) )
                 {
+                    //Change the flag
                     nameEntered = 1;
                     pwdEntered = 0;
                     SDL_FreeSurface(name->text);
                     name->text = NULL;
+                    //Free the old message surface
                     SDL_FreeSurface( message2 );
+                    //Change the message
                     message2 = TTF_RenderText_Solid( font, "Enter your password:", textColor );
                 }
             }
@@ -176,7 +256,7 @@ int main(int argc, char const *argv[])
 
     if (loginReturn == 0)
     {
-        // sleep(4);
+        sleep(4);
         SDL_FreeSurface(welcomeImage);
         SDL_FreeSurface(message1);
         SDL_FreeSurface(message2);
@@ -185,163 +265,95 @@ int main(int argc, char const *argv[])
         TTF_CloseFont(font);
         TTF_Quit();
         SDL_Quit();
-        // exit(1);
         return 0;
     }
-
-    SDL_FreeSurface(welcomeImage);
-    SDL_FreeSurface(message1);
-    SDL_FreeSurface(message2);
-    SDL_FreeSurface(message3);
-    TTF_CloseFont(font);
+    //free the loaded image
+    SDL_FreeSurface (welcomeImage);
+    SDL_FreeSurface( message1 );
+    SDL_FreeSurface( message2 );
+    SDL_FreeSurface( message3 );
+    //Close the font that was used
+    TTF_CloseFont( font );
 
     printf("now I have to implement game graphics.\n");
 
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    //                      declarations of SDL Game elements
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    SDL_Surface * gameImage = NULL, * sprite = NULL;
-    SDL_Rect playerPosition, spriteFrame;
-    int colorKey = SDL_MapRGB(screen->format, 255, 0, 255);
-    int quitGameLoop = 0;
+    if( SDL_Flip( screen ) == -1 )
+    {
+        return 1;
+    }
 
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    //                  Changing SDL window properties
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    SDL_WM_SetCaption("Start your quest in Pokemon MMORPG", NULL);
+    SDL_Surface * game = load_image("./../src/client/GUIGraphics/game.jpg");
+    SDL_Surface * sprite = load_image("./../src/client/GUIGraphics/sprite.bmp");
+    int colorkey = SDL_MapRGB(screen->format, 255, 0, 255);
+    SDL_SetColorKey(sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
+
+
+
+    screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE );
+    SDL_WM_SetCaption( "Start your quest in Pokemon MMORPG", NULL );
     SDL_EnableKeyRepeat(70, 70);
 
-
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    //                  loding images
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    gameImage = load_image("./../src/client/GUIGraphics/game.jpg");
-    sprite = load_image("./../src/client/GUIGraphics/sprite.bmp");
-    SDL_SetColorKey(sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorKey);
-
-
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    //                   Player location variables
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
     int x = 320, y = 240;
-    int xImageLeft = x - 320, yImageTop = y - 240;
 
-    playerPosition.x = x - xImageLeft;
-    playerPosition.y = y - yImageTop;
+    //get x y
 
-    spriteFrame.x = 128;
-    spriteFrame.y = 0;
-    spriteFrame.w = 32;
-    spriteFrame.h = 32;
+    xGlobal = x;
+    yGlobal = y;
+    apply_surface(xGlobal-(SCREEN_WIDTH/2),yGlobal-(SCREEN_HEIGHT/2),game,screen);
 
-    while(quitGameLoop == 0){
-        if (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_KEYDOWN)
-            {
-                if (event.key.keysym.sym == SDLK_RIGHT)
-                {
-                    if (spriteFrame.x == 64)
-                    {
-                        spriteFrame.x = 96;
-                    }
-                    else
-                    {
-                        spriteFrame.x = 64;
-                    }
-                    if (playerPosition.x >= 480)
-                    {
-                        xImageLeft -= 5;
-                    }
-                    else
-                    {
-                        playerPosition.x += 5;
-                    }
-                    printf("%d %d\n", playerPosition.x, playerPosition.x - xImageLeft);
-                }
+    /* set sprite position */
+    rcSprite.x = x;
+    rcSprite.y = y;
 
-                if (event.key.keysym.sym == SDLK_LEFT)
-                {
-                    if (spriteFrame.x == 192)
-                    {
-                        spriteFrame.x = 224;
-                    }
-                    else
-                    {
-                        spriteFrame.x = 192;
-                    }
-                    if (playerPosition.x <= 160)
-                    {
-                        xImageLeft += 5;
-                    }
-                    else
-                    {
-                        playerPosition.x -= 5;
-                    }
-                    printf("%d %d\n", playerPosition.x, playerPosition.x - xImageLeft);
-                }
+    /* set animation frame */
+    rcSrc.x = 128;
+    rcSrc.y = 0;
+    rcSrc.w = SPRITE_SIZE;
+    rcSrc.h = SPRITE_SIZE;
 
-                if (event.key.keysym.sym == SDLK_DOWN)
-                {
-                    if (spriteFrame.x == 128)
-                    {
-                        spriteFrame.x = 160;
-                    }
-                    else
-                    {
-                        spriteFrame.x = 128;
-                    }
-                    if (playerPosition.y >= 360)
-                    {
-                        yImageTop -= 5;
-                    }
-                    else
-                    {
-                        playerPosition.y += 5;
-                    }
-                    printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
-                }
+    gameover = 0;
 
-                if (event.key.keysym.sym == SDLK_UP)
-                {
-                    if (spriteFrame.x == 0)
-                    {
-                        spriteFrame.x = 32;
-                    }
-                    else
-                    {
-                        spriteFrame.x = 0;
-                    }
-                    if (playerPosition.y <= 120)
-                    {
-                        yImageTop += 5;
-                    }
-                    else
-                    {
-                        playerPosition.y -= 5;
-                    }
-                    printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
-                }
-            }
-            if (event.type == SDL_QUIT)
-            {
-                quitGameLoop = 1;
-            }
+    /* message pump */
+    while (!gameover)
+    {
+        SDL_Event event;
+        
+        /* look for an event */
+        if (SDL_PollEvent(&event)) {
+            HandleEvent(event);
         }
-        apply_surface(xImageLeft, yImageTop, gameImage, screen);
-        SDL_BlitSurface(sprite, &spriteFrame, screen, &playerPosition);
+
+        /* collide with edges of screen */
+        // if (rcSprite.x <= 0)
+        //     rcSprite.x = 0;
+        // if (rcSprite.x >= SCREEN_WIDTH - SPRITE_SIZE) 
+        //     rcSprite.x = SCREEN_WIDTH - SPRITE_SIZE;
+
+        // if (rcSprite.y <= 0)
+        //     rcSprite.y = 0;
+        // if (rcSprite.y >= SCREEN_HEIGHT - SPRITE_SIZE) 
+        //     rcSprite.y = SCREEN_HEIGHT - SPRITE_SIZE;
+
+        /* draw the grass */
+        // for (int x = 0; x < SCREEN_WIDTH / SPRITE_SIZE; x++) {
+        //     for (int y = 0; y < SCREEN_HEIGHT / SPRITE_SIZE; y++) {
+        //         rcGrass.x = x * SPRITE_SIZE;
+        //         rcGrass.y = y * SPRITE_SIZE;
+        //         SDL_BlitSurface(grass, NULL, screen, &rcGrass);
+        //     }
+        // }
+
+        apply_surface(xGlobal-(SCREEN_WIDTH/2),yGlobal-(SCREEN_HEIGHT/2),game,screen);
+        /* draw the sprite */
+        SDL_BlitSurface(sprite, &rcSrc, screen, &rcSprite);
+
+        /* update the screen */
         SDL_UpdateRect(screen, 0, 0, 0, 0);
     }
-    
-    Mix_FreeMusic(music);
+
+    // pause();
+    // SDL_FreeSurface(gameScreen);
+    Mix_FreeMusic( music );
     TTF_Quit();
     SDL_Quit();
 

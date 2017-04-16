@@ -3,8 +3,13 @@
 
 //generates the cryptographic hash of the password
 char * hash(char * password){
+
+	/* Seed number for rand() */
+	srand((unsigned int) time(0) + getpid());
+
 	char * hashedPassword;
 	int i, passwordLen, sum = 0, A[8];
+	
 	hashedPassword = malloc(9 * sizeof(char));
 	passwordLen = strlen(password);
 	for(i=0;i<passwordLen;i++){
