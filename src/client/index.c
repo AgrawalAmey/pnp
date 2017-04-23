@@ -3,9 +3,9 @@
 #include "./login/login.h"
 
 //The attributes of the screen
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-const int SCREEN_BPP = 32;
+int SCREEN_WIDTH = 640;
+int SCREEN_HEIGHT = 480;
+int SCREEN_BPP = 32;
 
 //the main loop on the client side
 //handles all the keyboard event
@@ -71,7 +71,7 @@ int main(int argc, char const *argv[])
     struct stringInput * pwd = (struct stringInput *) malloc (sizeof(struct stringInput));
     pwd->text == NULL;
     memset(pwd->str,'\0',20);
-    int pwdEntered = 1;
+    int pwdEntered = 0;
 
 
     ////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ int main(int argc, char const *argv[])
     //                flag variales
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
-    int loginReturn;
+    int loginReturn = 0;
     int quitLoginLoop = 0;
 
     char result[1000]= {'\0'};
@@ -104,7 +104,7 @@ int main(int argc, char const *argv[])
 
     while( quitLoginLoop == 0 )
     {
-        while(SDL_PollEvent(&event))
+        if(SDL_PollEvent(&event))
         {
             SDL_EnableUNICODE(1);
             if(pwdEntered == 0 && nameEntered == 1)
@@ -112,7 +112,7 @@ int main(int argc, char const *argv[])
                 handle_input(pwd, event, font, textColor);
                 if( ( event.type == SDL_KEYDOWN ) && ( event.key.keysym.sym == SDLK_RETURN ) )
                 {
-                    pwdEntered == 1;
+                    pwdEntered = 1;
                     SDL_FreeSurface(pwd->text);
                     pwd->text = NULL;
                     SDL_FreeSurface( message2 );
@@ -134,7 +134,7 @@ int main(int argc, char const *argv[])
                     quitLoginLoop = 1;
                 }
             }
-            if( nameEntered == 0 )
+            else if( nameEntered == 0 )
             {
                 handle_input(name, event, font, textColor);
                 if((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_RETURN))
@@ -189,157 +189,158 @@ int main(int argc, char const *argv[])
         return 0;
     }
 
-    // SDL_FreeSurface(welcomeImage);
-    // SDL_FreeSurface(message1);
-    // SDL_FreeSurface(message2);
-    // SDL_FreeSurface(message3);
-    // TTF_CloseFont(font);
-    //
-    // printf("now I have to implement game graphics.\n");
-    //
-    // ////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////
-    // //                      declarations of SDL Game elements
-    // ////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////
-    // SDL_Surface * gameImage = NULL, * sprite = NULL;
-    // SDL_Rect playerPosition, spriteFrame;
-    // int colorKey = SDL_MapRGB(screen->format, 255, 0, 255);
-    // int quitGameLoop = 0;
-    //
-    // ////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////
-    // //                  Changing SDL window properties
-    // ////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////
-    // SDL_WM_SetCaption("Start your quest in Pokemon MMORPG", NULL);
-    // SDL_EnableKeyRepeat(70, 70);
-    //
-    //
-    // ////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////
-    // //                  loding images
-    // ////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////
-    // gameImage = load_image("./../src/client/GUIGraphics/game.jpg");
-    // sprite = load_image("./../src/client/GUIGraphics/sprite.bmp");
-    // SDL_SetColorKey(sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorKey);
-    //
-    //
-    // ////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////
-    // //                   Player location variables
-    // ////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////
-    // int x = 320, y = 240;
-    // int xImageLeft = x - 320, yImageTop = y - 240;
-    //
-    // playerPosition.x = x - xImageLeft;
-    // playerPosition.y = y - yImageTop;
-    //
-    // spriteFrame.x = 128;
-    // spriteFrame.y = 0;
-    // spriteFrame.w = 32;
-    // spriteFrame.h = 32;
-    //
-    // while(quitGameLoop == 0){
-    //     if (SDL_PollEvent(&event))
-    //     {
-    //         if (event.type == SDL_KEYDOWN)
-    //         {
-    //             if (event.key.keysym.sym == SDLK_RIGHT)
-    //             {
-    //                 if (spriteFrame.x == 64)
-    //                 {
-    //                     spriteFrame.x = 96;
-    //                 }
-    //                 else
-    //                 {
-    //                     spriteFrame.x = 64;
-    //                 }
-    //                 if (playerPosition.x >= 480)
-    //                 {
-    //                     xImageLeft -= 5;
-    //                 }
-    //                 else
-    //                 {
-    //                     playerPosition.x += 5;
-    //                 }
-    //                 printf("%d %d\n", playerPosition.x, playerPosition.x - xImageLeft);
-    //             }
-    //
-    //             if (event.key.keysym.sym == SDLK_LEFT)
-    //             {
-    //                 if (spriteFrame.x == 192)
-    //                 {
-    //                     spriteFrame.x = 224;
-    //                 }
-    //                 else
-    //                 {
-    //                     spriteFrame.x = 192;
-    //                 }
-    //                 if (playerPosition.x <= 160)
-    //                 {
-    //                     xImageLeft += 5;
-    //                 }
-    //                 else
-    //                 {
-    //                     playerPosition.x -= 5;
-    //                 }
-    //                 printf("%d %d\n", playerPosition.x, playerPosition.x - xImageLeft);
-    //             }
-    //
-    //             if (event.key.keysym.sym == SDLK_DOWN)
-    //             {
-    //                 if (spriteFrame.x == 128)
-    //                 {
-    //                     spriteFrame.x = 160;
-    //                 }
-    //                 else
-    //                 {
-    //                     spriteFrame.x = 128;
-    //                 }
-    //                 if (playerPosition.y >= 360)
-    //                 {
-    //                     yImageTop -= 5;
-    //                 }
-    //                 else
-    //                 {
-    //                     playerPosition.y += 5;
-    //                 }
-    //                 printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
-    //             }
-    //
-    //             if (event.key.keysym.sym == SDLK_UP)
-    //             {
-    //                 if (spriteFrame.x == 0)
-    //                 {
-    //                     spriteFrame.x = 32;
-    //                 }
-    //                 else
-    //                 {
-    //                     spriteFrame.x = 0;
-    //                 }
-    //                 if (playerPosition.y <= 120)
-    //                 {
-    //                     yImageTop += 5;
-    //                 }
-    //                 else
-    //                 {
-    //                     playerPosition.y -= 5;
-    //                 }
-    //                 printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
-    //             }
-    //         }
-    //         if (event.type == SDL_QUIT)
-    //         {
-    //             quitGameLoop = 1;
-    //         }
-    //     }
-    //     apply_surface(xImageLeft, yImageTop, gameImage, screen);
-    //     SDL_BlitSurface(sprite, &spriteFrame, screen, &playerPosition);
-    //     SDL_UpdateRect(screen, 0, 0, 0, 0);
-    // }
+    SDL_FreeSurface(welcomeImage);
+    SDL_FreeSurface(message1);
+    SDL_FreeSurface(message2);
+    SDL_FreeSurface(message3);
+    TTF_CloseFont(font);
+    
+    printf("now I have to implement game graphics.\n");
+    
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    //                      declarations of SDL Game elements
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    SDL_Surface * gameImage = NULL, * sprite = NULL;
+    SDL_Rect playerPosition, spriteFrame;
+    int colorKey = SDL_MapRGB(screen->format, 255, 0, 255);
+    int quitGameLoop = 0;
+    
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    //                  Changing SDL window properties
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    SDL_WM_SetCaption("Start your quest in Pokemon MMORPG", NULL);
+    SDL_EnableKeyRepeat(70, 70);
+    
+    
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    //                  loding images
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    gameImage = load_image("./../src/client/GUIGraphics/money.gif");
+    sprite = load_image("./../src/client/GUIGraphics/sprite.bmp");
+    SDL_SetColorKey(sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorKey);
+    
+    
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    //                   Player location variables
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    int x = 320, y = 240;
+    int xImageLeft = x - 320, yImageTop = y - 240;
+    
+    playerPosition.x = x - xImageLeft;
+    playerPosition.y = y - yImageTop;
+    
+    spriteFrame.x = 128;
+    spriteFrame.y = 0;
+    spriteFrame.w = 32;
+    spriteFrame.h = 32;
+    
+    while(quitGameLoop == 0){
+        if (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_KEYDOWN)
+            {
+                if (event.key.keysym.sym == SDLK_RIGHT)
+                {
+                    if (spriteFrame.x == 64)
+                    {
+                        spriteFrame.x = 96;
+                    }
+                    else
+                    {
+                        spriteFrame.x = 64;
+                    }
+                    if (playerPosition.x >= 480)
+                    {
+                        xImageLeft -= 5;
+                    }
+                    else
+                    {
+                        playerPosition.x += 5;
+                    }
+                    printf("%d %d %d\n", playerPosition.x, playerPosition.x - xImageLeft, xImageLeft);
+                }
+    
+                if (event.key.keysym.sym == SDLK_LEFT)
+                {
+                    if (spriteFrame.x == 192)
+                    {
+                        spriteFrame.x = 224;
+                    }
+                    else
+                    {
+                        spriteFrame.x = 192;
+                    }
+                    if (playerPosition.x <= 160)
+                    {
+                        xImageLeft += 5;
+                    }
+                    else
+                    {
+                        playerPosition.x -= 5;
+                    }
+                    printf("%d %d\n", playerPosition.x, playerPosition.x - xImageLeft);
+                }
+    
+                if (event.key.keysym.sym == SDLK_DOWN)
+                {
+                    if (spriteFrame.x == 128)
+                    {
+                        spriteFrame.x = 160;
+                    }
+                    else
+                    {
+                        spriteFrame.x = 128;
+                    }
+                    if (playerPosition.y >= 360)
+                    {
+                        yImageTop -= 5;
+                    }
+                    else
+                    {
+                        playerPosition.y += 5;
+                    }
+                    printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
+                }
+    
+                if (event.key.keysym.sym == SDLK_UP)
+                {
+                    if (spriteFrame.x == 0)
+                    {
+                        spriteFrame.x = 32;
+                    }
+                    else
+                    {
+                        spriteFrame.x = 0;
+                    }
+                    if (playerPosition.y <= 120)
+                    {
+                        yImageTop += 5;
+                    }
+                    else
+                    {
+                        playerPosition.y -= 5;
+                    }
+                    printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
+                }
+            }
+            if (event.type == SDL_QUIT)
+            {
+                quitGameLoop = 1;
+            }
+        }
+        render_background(xImageLeft, yImageTop, gameImage, screen);
+        // apply_surface(xImageLeft, yImageTop, gameImage, screen);
+        SDL_BlitSurface(sprite, &spriteFrame, screen, &playerPosition);
+        SDL_UpdateRect(screen, 0, 0, 0, 0);
+    }
     
     Mix_FreeMusic(music);
     TTF_Quit();

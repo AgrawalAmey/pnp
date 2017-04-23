@@ -2,12 +2,13 @@
 # To be replaced by Cmake
 
 client:
-	gcc -g ../src/client/login/login.c \
+	gcc -g -fno-stack-protector ../src/client/login/login.c \
 	../src/utils/hash.c \
 	../src/client/index.c \
 	../src/client/GUIUtils/load_image.c \
 	../src/client/GUIUtils/append.c \
 	../src/client/GUIUtils/apply_surface.c \
+	../src/client/GUIUtils/render_background.c \
 	../src/client/GUIUtils/handle_input.c \
 	-D_GNU_SOURCE=1 -D_REENTRANT -I/usr/include/SDL -lSDL -lSDL_image -lSDL_ttf -lSDL_mixer \
 	-I/usr/local/include/libmongoc-1.0 \
