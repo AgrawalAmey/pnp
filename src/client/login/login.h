@@ -3,6 +3,6 @@
 #define CLIENT_LOGIN
 
 // Performs login
-void login(char * inBuffer, char * preference, char * username, char * password);
+void login(char * inBuffer, char * preference, char * name, char * username, char * password);
 
 #endif // CLIENT_LOGIN

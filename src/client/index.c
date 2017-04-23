@@ -6,7 +6,6 @@
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 480;
 const int SCREEN_BPP    = 32;
-
 // the main loop on the client side
 // handles all the keyboard event
 int
@@ -68,8 +67,9 @@ main(int argc, char const * argv[])
 
     struct stringInput * pwd = (struct stringInput *) malloc(sizeof(struct stringInput));
     pwd->text == NULL;
+
     memset(pwd->str, '\0', 20);
-    int pwdEntered = 1;
+    int pwdEntered = 0;
 
 
     // //////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ main(int argc, char const * argv[])
     //                flag variales
     // //////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////
-    int loginReturn;
+    int loginReturn   = 0;
     int quitLoginLoop = 0;
 
     char result[1000]       = { '\0' };
@@ -100,12 +100,13 @@ main(int argc, char const * argv[])
 
 
     while (quitLoginLoop == 0) {
-        while (SDL_PollEvent(&event)) {
+        if (SDL_PollEvent(&event)) {
             SDL_EnableUNICODE(1);
             if (pwdEntered == 0 && nameEntered == 1) {
                 handle_input(pwd, event, font, textColor);
                 if ( ( event.type == SDL_KEYDOWN ) && ( event.key.keysym.sym == SDLK_RETURN ) ) {
-                    pwdEntered == 1;
+                    pwdEntered = 1;
+
                     SDL_FreeSurface(pwd->text);
                     pwd->text = NULL;
                     SDL_FreeSurface(message2);
@@ -123,8 +124,7 @@ main(int argc, char const * argv[])
                     message3      = TTF_RenderText_Solid(font, displayResult, textColor);
                     quitLoginLoop = 1;
                 }
-            }
-            if (nameEntered == 0) {
+            } else if (nameEntered == 0) {
                 handle_input(name, event, font, textColor);
                 if ((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_RETURN)) {
                     nameEntered = 1;
@@ -211,7 +211,7 @@ main(int argc, char const * argv[])
     //                  loding images
     // //////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////
-    gameImage = load_image("./../src/client/GUIGraphics/game.jpg");
+    gameImage = load_image("./../src/client/GUIGraphics/money.gif");
     sprite    = load_image("./../src/client/GUIGraphics/sprite.bmp");
     SDL_SetColorKey(sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorKey);
 
@@ -246,7 +246,7 @@ main(int argc, char const * argv[])
                     } else {
                         playerPosition.x += 5;
                     }
-                    printf("%d %d\n", playerPosition.x, playerPosition.x - xImageLeft);
+                    printf("%d %d %d\n", playerPosition.x, playerPosition.x - xImageLeft, xImageLeft);
                 }
 
                 if (event.key.keysym.sym == SDLK_LEFT) {
@@ -295,10 +295,12 @@ main(int argc, char const * argv[])
                 quitGameLoop = 1;
             }
         }
-        apply_surface(xImageLeft, yImageTop, gameImage, screen);
+        render_background(xImageLeft, yImageTop, gameImage, screen);
+        // apply_surface(xImageLeft, yImageTop, gameImage, screen);
         SDL_BlitSurface(sprite, &spriteFrame, screen, &playerPosition);
         SDL_UpdateRect(screen, 0, 0, 0, 0);
     }
+
 
     Mix_FreeMusic(music);
     TTF_Quit();
