@@ -25,6 +25,7 @@ login_server:
 	../src/login_server/load_balancer.c \
 	../src/login_server/session_key.c \
 	../src/login_server/signup.c \
+	../src/login_server/tcp_server.c \
 	../src/login_server/login.c \
 	-I/usr/local/include/libmongoc-1.0 \
 	-I/usr/local/include/libbson-1.0 \

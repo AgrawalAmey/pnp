@@ -58,62 +58,70 @@ void tcpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
         ////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////
 
-        char inBuffer[1024], outBuffer[1024];
         char ** userDetails;
         int insertResult;
         int identityVerified;
         char sessionKey[16];
+        char gameServerAddr[30];
+        char inBuffer[1024], outBuffer[1024];
 
-        while(!listen(welcomeSocket, 100))
+        while(! listen(welcomeSocket, 100))
         {
-                if((newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size)) < 0) {
-                        printf("Error in accepting connection!\n");
-                        exit(1);
+            if((newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size)) < 0){
+                printf("Error in accepting connection!\n");
+                exit(1);
+            }
+
+            /*---- Recieve username and password ----*/
+
+            recv(newSocket, inBuffer, 1024, 0);
+
+            printf("%s\n", inBuffer);
+
+            userDetails = strSplit(inBuffer, ' ');
+
+            if (strcmp(userDetails[0], "signup") == 0)
+            {
+                // Type, name, username, password
+                insertResult = signup(userDetails[1], userDetails[2], userDetails[3], mongoConnection);
+
+                /*---- Send appropriate message ----*/
+                if(insertResult == 0){
+                    strcpy(outBuffer, "success");
+                } else if(insertResult == -1){
+                    strcpy(outBuffer, "error");
+                } else {
+                    strcpy(outBuffer, "duplicate");
                 }
 
-                /*---- Recieve username and password ----*/
+                send(newSocket, outBuffer, 1024, 0);
 
-                recv(newSocket, inBuffer, 1024, 0);
+                close(newSocket);
+            }
+            else if (strcmp(userDetails[0], "login") == 0)
+                // Type, name, username, password
+                identityVerified = login(userDetails[2], userDetails[3], mongoConnection);
 
-                printf("%s\n", inBuffer);
-
-                userDetails = strSplit(inBuffer, ' ');
-
-                if (strcmp(userDetails[0], "signup") == 0)
+                /*---- Send appropriate message ----*/
                 {
-                        insertResult = signup(userDetails[1], userDetails[2], userDetails[3], mongoConnection);
+                if (identityVerified == 0){
+                    assignGameServer(gameServerAddr ,userDetails[2], *redisConnection);
+                    assignSessionKey(sessionKey, userDetails[2], *redisConnection);
+                    strcpy(outBuffer, "success");
+                    strcat(outBuffer, " ");
+                    strcat(outBuffer, sessionKey);
+                    strcat(outBuffer, " ");
+                    strcat(outBuffer, gameServerAddr);
 
-                        /*---- Send appropriate message ----*/
-                        if(insertResult == 0) {
-                                strcpy(outBuffer, "Signed up succesfully!");
-                        } else if(insertResult == -1) {
-                                strcpy(outBuffer, "Sorry! Something went wrong.");
-                        } else {
-                                strcpy(outBuffer, "Username already exists.");
-                        }
-
-
-                        send(newSocket, outBuffer, 1024, 0);
-
-                        close(newSocket);
                 }
-                else if (strcmp(userDetails[0], "login") == 0)
-                {
-                        identityVerified = login(userDetails[2], userDetails[3],mongoConnection);
-
-                        /*---- Send appropriate message ----*/
-                        if (identityVerified == 0) {
-                                strcpy(outBuffer, "Logged in succesfully!");
-                        }
-                        else if(identityVerified == -1) {
-                                strcpy(outBuffer, "Username and/or password Incorrect. Please try again!");
-                        }
-
-                        send(newSocket, outBuffer, 1024, 0);
-
-                        close(newSocket);
+                else if(identityVerified == -1){
+                    strcpy(outBuffer, "error");
                 }
+
+                send(newSocket, outBuffer, 1024, 0);
+
+                close(newSocket);
+            }
 
         }
-
 }

@@ -27,11 +27,13 @@ int main(){
         // Fork out tcp server
         if(fork() == 0) {
                 // tcpServer(mongoConnection, redisConnection);
+                exit(1);
         }
 
         // Fork out udp server
         if(fork() == 0) {
                 udpServer(mongoConnection, redisConnection);
+                exit(1);
         }
 
         ////////////////////////////////////////////////////////////////////////////
