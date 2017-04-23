@@ -6,7 +6,7 @@ Login/Signup requests
 
 |Index  | Feild Name  | Explanation  |
 |:---:|:---:|:---:|
-|0   | Type  | "login"  or "Signup"|
+|0   | Type  | "login"  or "signup"|
 |1  |  Name |  - |
 |2   |  Username | -  |
 |3   |  Password | -  |

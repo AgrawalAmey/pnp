@@ -21,6 +21,7 @@ login_server:
 	../src/utils/redis.c \
 	../src/utils/rand.c \
 	../src/utils/split_string.c \
+	../src/login_server/tcp_server.c \
 	../src/login_server/index.c \
 	../src/login_server/load_balancer.c \
 	../src/login_server/session_key.c \
