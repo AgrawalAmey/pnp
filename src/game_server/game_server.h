@@ -11,4 +11,9 @@ void tcpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
 // UDP Server
 void udpServer(MongoConnection mongoConnection, redisContext ** redisConnection);
 
+// Store the position of user and returns position of nearby users
+void
+handlePositionRequest(char * outBuffer, char * username, char * position, double timestamp,
+  redisContext * redisConnection);
+
 #endif // GAME_SERVER

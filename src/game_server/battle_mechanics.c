@@ -104,4 +104,11 @@ battleStep(char * username0, char * username1, char * battleSessionKey, MongoCon
 
     bson_destroy(query);
     mongoc_cursor_destroy(cursor);
+
+    //////////////////////////////////////////////////////
+    // Get the info about the two pokemons from pokedex //
+    //////////////////////////////////////////////////////
+    
+
+
 } /* battleStep */
