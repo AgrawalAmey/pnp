@@ -3,7 +3,9 @@
 #include "./login.h"
 
 // Performs login
-void login(char * inBuffer, char * preference, char * name, char * username, char * password){
+void
+login(char * inBuffer, char * preference, char * name, char * username, char * password)
+{
     // printf("%s %s %s %s\n", preference, name, username, password);
     int clientSocket;
     char outBuffer[1024];
@@ -26,7 +28,7 @@ void login(char * inBuffer, char * preference, char * name, char * username, cha
 
     /*---- Connect the socket to the server using the address struct ----*/
     addr_size = sizeof serverAddr;
-    if (connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size) < 0){
+    if (connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size) < 0) {
         printf("Error in connecting to the server.\n");
         exit(1);
     }
@@ -48,4 +50,4 @@ void login(char * inBuffer, char * preference, char * name, char * username, cha
 
     /*---- Read the message from the server into the buffer ----*/
     recv(clientSocket, inBuffer, 1024, 0);
-}
+} /* login */
