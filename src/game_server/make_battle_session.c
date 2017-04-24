@@ -22,9 +22,9 @@ makeBattleSession(char * battleSessioKey, char * username0, char * username1, ch
 
 
     if (reply->type == REDIS_REPLY_NIL) {
-        // Set a flag that tells user is ready with expiry of 100 seconds
+        // Set a flag that tells user is ready with expiry of 20 seconds
         // Set the pokemonId as value
-        redisCommand(redisConnection, "set read_for_battle:%s %s ex 100", username0, pokemonId);
+        redisCommand(redisConnection, "set read_for_battle:%s %s ex 20", username0, pokemonId);
 
         freeReplyObject(reply);
         return 0;

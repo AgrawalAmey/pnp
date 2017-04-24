@@ -23,4 +23,7 @@ void endRedisConnection(redisContext *c);
 //hash password
 char * hash(char * password);
 
+int
+startsWith(const char * pre, const char * str);
+
 #endif // UTILS

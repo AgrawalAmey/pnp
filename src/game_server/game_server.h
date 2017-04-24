@@ -16,4 +16,17 @@ void
 handlePositionRequest(char * outBuffer, char * username, char * position, double timestamp,
   redisContext * redisConnection);
 
+// Fetch pokemon data from mongo
+void
+fetchPokemonData(pokemon pok, char * pokemonId, MongoConnection mongoConnection);
+
+// Fetch move data from mongo
+void
+fetchMoveData(move * m, char * move, MongoConnection mongoConnection);
+
+void
+updatePokemonInfo(char * pokemonId, int new_xp, int new_level, MongoConnection mongoConnection);
+
+int
+addPokemon(char * username, int pokedexId, int level, int xp, MongoConnection mongoConnection);
 #endif // GAME_SERVER
