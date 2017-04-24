@@ -7,6 +7,7 @@ int SCREEN_WIDTH = 640;
 int SCREEN_HEIGHT = 480;
 int SCREEN_BPP = 32;
 
+
 //the main loop on the client side
 //handles all the keyboard event
 int main(int argc, char const *argv[])
@@ -196,7 +197,26 @@ int main(int argc, char const *argv[])
     TTF_CloseFont(font);
     
     printf("now I have to implement game graphics.\n");
+
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    //                 Setting up a shared memory
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    int shmid;
+    struct hashTable * hashtable;
+    if ((shmid = shmget(IPC_PRIVATE, sizeof(struct hashTable), 0666 | IPC_CREAT)) == -1){
+            perror("shmget:");
+            exit(1);
+    }
+    if ((hashtable = shmat(shmid, (void *) 0, 0)) == (struct hashTable *) (-1)){
+            perror("shmat:");
+            exit(1);
+    }
+    initializeSHM(hashtable);
+    // printf("%s\n", hashtable->list[1].username);
     
+
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
     //                      declarations of SDL Game elements
@@ -232,6 +252,8 @@ int main(int argc, char const *argv[])
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
     int x = 320, y = 240;
+    hashtable->myX = x;
+    hashtable->myY = y;
     int xImageLeft = x - 320, yImageTop = y - 240;
     
     playerPosition.x = x - xImageLeft;
@@ -241,7 +263,21 @@ int main(int argc, char const *argv[])
     spriteFrame.y = 0;
     spriteFrame.w = 32;
     spriteFrame.h = 32;
+
+
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    //                  Forking for network handling child process
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    if (!fork())
+    {
+        //child process code
+        udpGameClient(hashtable);
+        exit(1);
+    }
     
+    /*
     while(quitGameLoop == 0){
         if (SDL_PollEvent(&event))
         {
@@ -342,6 +378,7 @@ int main(int argc, char const *argv[])
         SDL_UpdateRect(screen, 0, 0, 0, 0);
     }
     
+    */
     Mix_FreeMusic(music);
     TTF_Quit();
     SDL_Quit();

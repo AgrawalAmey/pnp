@@ -10,6 +10,8 @@ client:
 	../src/client/GUIUtils/apply_surface.c \
 	../src/client/GUIUtils/render_background.c \
 	../src/client/GUIUtils/handle_input.c \
+	../src/client/GUIUtils/hashtable.c \
+	../src/client/GUIUtils/initializeSHM.c \
 	-D_GNU_SOURCE=1 -D_REENTRANT -I/usr/include/SDL -lSDL -lSDL_image -lSDL_ttf -lSDL_mixer \
 	-I/usr/local/include/libmongoc-1.0 \
 	-I/usr/local/include/libbson-1.0 \
