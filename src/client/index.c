@@ -1,6 +1,9 @@
+#include "./../utils/includes.h"
+#include "./../utils/utils.h"
 #include "./GUIUtils/includeGUI.h"
 #include "./GUIUtils/GUIUtils.h"
 #include "./login/login.h"
+#include "./udpGameClient/udpGameClient.h"
 
 //The attributes of the screen
 int SCREEN_WIDTH = 640;
@@ -113,7 +116,7 @@ int main(int argc, char const *argv[])
                     SDL_FreeSurface(message2);
                     message2 = TTF_RenderText_Solid(font, "Connecting to the serever...", textColor);
                     login(result, "login", "name", name->str, pwd->str);
-                    printf("%s\n", result);
+                    // printf("%s\n", result);
                     if (result[0] == 's') {
                         loginReturn = 1;
                         strcpy(displayResult, "Logged in succesfully!");
@@ -180,6 +183,21 @@ int main(int argc, char const *argv[])
         return 0;
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    //                 Extract information from reuslt
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    char sessionKey[16] = {'\0'};
+    char gameServerAddress[30] = {'\0'};
+    char ** loginDetails;
+    printf("%s\n", result);
+    loginDetails = strSplit(result, ' ');
+    strcpy(sessionKey, loginDetails[1]);
+    strcpy(gameServerAddress, loginDetails[2]);
+
+
+
     SDL_FreeSurface(welcomeImage);
     SDL_FreeSurface(message1);
     SDL_FreeSurface(message2);
@@ -231,7 +249,7 @@ int main(int argc, char const *argv[])
     //                  loding images
     // //////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////
-    gameImage = load_image("./../src/client/GUIGraphics/money.gif");
+    gameImage = load_image("./../src/client/GUIGraphics/game.jpg");
     sprite    = load_image("./../src/client/GUIGraphics/sprite.bmp");
     SDL_SetColorKey(sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorKey);
 
@@ -260,10 +278,12 @@ int main(int argc, char const *argv[])
     //                  Forking for network handling child process
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
-    if (!fork())
+    int positionPid;
+    if ((positionPid = fork()) == 0)
     {
         //child process code
-        udpGameClient(hashtable);
+        // udpGameClient(hashtable, sessionKey, gameServerAddress, name->str);
+        udpGameClient(hashtable, sessionKey, gameServerAddress, name->str);
         exit(1);
     }
     
@@ -286,7 +306,9 @@ int main(int argc, char const *argv[])
                     } else {
                         playerPosition.x += 5;
                     }
-                    printf("%d %d %d\n", playerPosition.x, playerPosition.x - xImageLeft, xImageLeft);
+                    hashtable->myX = playerPosition.x - xImageLeft;
+                    hashtable->myY = playerPosition.y - yImageTop;
+                    // printf("%d %d %d\n", playerPosition.x, playerPosition.x - xImageLeft, xImageLeft);
                 }
 
                 if (event.key.keysym.sym == SDLK_LEFT) {
@@ -300,7 +322,9 @@ int main(int argc, char const *argv[])
                     } else {
                         playerPosition.x -= 5;
                     }
-                    printf("%d %d\n", playerPosition.x, playerPosition.x - xImageLeft);
+                    // printf("%d %d\n", playerPosition.x, playerPosition.x - xImageLeft);
+                    hashtable->myX = playerPosition.x - xImageLeft;
+                    hashtable->myY = playerPosition.y - yImageTop;
                 }
 
                 if (event.key.keysym.sym == SDLK_DOWN) {
@@ -314,7 +338,9 @@ int main(int argc, char const *argv[])
                     } else {
                         playerPosition.y += 5;
                     }
-                    printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
+                    // printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
+                    hashtable->myX = playerPosition.x - xImageLeft;
+                    hashtable->myY = playerPosition.y - yImageTop;
                 }
 
                 if (event.key.keysym.sym == SDLK_UP) {
@@ -328,7 +354,9 @@ int main(int argc, char const *argv[])
                     } else {
                         playerPosition.y -= 5;
                     }
-                    printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
+                    // printf("%d %d\n", playerPosition.y, playerPosition.y - yImageTop);
+                    hashtable->myX = playerPosition.x - xImageLeft;
+                    hashtable->myY = playerPosition.y - yImageTop;
                 }
             }
             if (event.type == SDL_QUIT) {
@@ -336,6 +364,7 @@ int main(int argc, char const *argv[])
             }
         }
         render_background(xImageLeft, yImageTop, gameImage, screen);
+        render_players(hashtable, screen, sprite, xImageLeft, yImageTop);
         // apply_surface(xImageLeft, yImageTop, gameImage, screen);
         SDL_BlitSurface(sprite, &spriteFrame, screen, &playerPosition);
         SDL_UpdateRect(screen, 0, 0, 0, 0);
@@ -344,6 +373,8 @@ int main(int argc, char const *argv[])
     Mix_FreeMusic(music);
     TTF_Quit();
     SDL_Quit();
+
+    kill(positionPid, SIGKILL);
 
     return 0;
 } /* main */

@@ -1,3 +1,4 @@
+#include "../../utils/includes.h"
 #include "includeGUI.h"
 
 int hashUserame(struct hashTable * hashtable, char * username){

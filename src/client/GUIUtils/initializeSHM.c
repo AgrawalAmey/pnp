@@ -1,3 +1,4 @@
+#include "../../utils/includes.h"
 #include "includeGUI.h"
 
 void initializeSHM(struct hashTable * hashtable){

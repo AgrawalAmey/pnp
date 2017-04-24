@@ -4,12 +4,12 @@
 
 // Store the position of user and returns position of nearby users
 void
-handlePositionRequest(char * outBuffer, char * username, char * position, double timestamp,
+handlePositionRequest(char * outBuffer, char * username, char * position, long int timestamp,
   redisContext * redisConnection)
 {
     redisReply * r;
 
-    double last_timestamp;
+    long int last_timestamp;
     char ** positions;
 
     char usersX[100][100];
@@ -28,8 +28,8 @@ handlePositionRequest(char * outBuffer, char * username, char * position, double
 
     r = redisCommand(redisConnection, "get pos_timestamp:%s", username);
     if (r->type == REDIS_REPLY_STRING) {
-        last_timestamp = atof(r->str);
-        printf("%lf\n", last_timestamp);
+        last_timestamp = atol(r->str);
+        printf("%ld\n", last_timestamp);
         if (timestamp < last_timestamp)
             strcat(outBuffer, "error");
     } // Else: The position of user has not been set ever

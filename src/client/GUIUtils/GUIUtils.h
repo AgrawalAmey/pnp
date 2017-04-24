@@ -19,4 +19,6 @@ void render_background(int x, int y, SDL_Surface* source, SDL_Surface* destinati
 
 void initializeSHM(struct hashTable * hashtable);
 
+void render_players(struct hashTable * hashtable, SDL_Surface * screen, SDL_Surface * sprite, int xOffset, int yOffset);
+
 #endif // GUIUTILS

@@ -8,6 +8,8 @@
 #include <string.h>
 #include <time.h>
 #include <sys/types.h>
+#include <sys/shm.h>
+#include <signal.h>
 #include <assert.h>
 #include <unistd.h>
 #include <bson.h>
