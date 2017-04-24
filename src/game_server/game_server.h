@@ -12,8 +12,7 @@ void tcpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
 void udpServer(MongoConnection mongoConnection, redisContext ** redisConnection);
 
 // Store the position of user and returns position of nearby users
-void
-handlePositionRequest(char * outBuffer, char * username, char * position, double timestamp,
+void handlePositionRequest(char * outBuffer, char * username, char * position, long int timestamp,
   redisContext * redisConnection);
 
 // Fetch pokemon data from mongo

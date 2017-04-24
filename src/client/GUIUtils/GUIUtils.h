@@ -14,4 +14,11 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination);
 //this function is resposible for the typing screen during password
 void handle_input(struct stringInput * name, SDL_Event event, TTF_Font * font, SDL_Color textColor);
 
+//this function is responsible for rendering background during game
+void render_background(int x, int y, SDL_Surface* source, SDL_Surface* destination);
+
+void initializeSHM(struct hashTable * hashtable);
+
+void render_players(struct hashTable * hashtable, SDL_Surface * screen, SDL_Surface * sprite, int xOffset, int yOffset);
+
 #endif // GUIUTILS

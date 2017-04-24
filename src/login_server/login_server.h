@@ -1,4 +1,4 @@
-// Definations for all parser functions
+// Definations for all login server functions
 #ifndef LOGIN_SERVER
 #define LOGIN_SERVER
 

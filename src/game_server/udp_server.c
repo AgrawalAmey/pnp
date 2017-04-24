@@ -59,7 +59,7 @@ udpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
 
             if (sessionValid == 1) {
                 if (strcmp(reqTokens[0], "position") == 0) {
-                    handlePositionRequest(outBuffer, reqTokens[1], reqTokens[4], atof(reqTokens[3]), *redisConnection);
+                    handlePositionRequest(outBuffer, reqTokens[1], reqTokens[4], atol(reqTokens[3]), *redisConnection);
                 }
             } else {
                 strcpy(outBuffer, "error");
