@@ -121,4 +121,4 @@ Signout response
 
 |Index  | Feild Name  | Explanation  |
 |:---:|:---:|:---:|
-|0 | Type | "Dusvedanya" |
+|0 | Type | "dusvedanya" |
