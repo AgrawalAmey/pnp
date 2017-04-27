@@ -61,7 +61,7 @@ void udpGameClient(struct hashTable * hashtable, char * sessionKey, char * serve
 		populateSHM(hashtable, inBuffer);
 
 		// usleep(40000);
-		usleep(100000);
+		usleep(500000);
 	}
 
 }

@@ -24,6 +24,7 @@ int main(int argc, char const *argv[])
     SDL_Surface * message1 = NULL, * message2 = NULL, * message3 = NULL;
     SDL_Event event;
     TTF_Font * font     = NULL;
+    TTF_Font * fontSmall     = NULL;
     SDL_Color textColor = { 0xFF, 0xFF, 0xFF };
     Mix_Music * music   = NULL;
 
@@ -82,6 +83,7 @@ int main(int argc, char const *argv[])
     // //////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////
     font         = TTF_OpenFont("./../src/client/GUIGraphics/fontb.ttf", 40);
+    fontSmall    = TTF_OpenFont("./../src/client/GUIGraphics/fontb.ttf", 20);
     welcomeImage = load_image("./../src/client/GUIGraphics/pokelogo.bmp");
     if (font == NULL || welcomeImage == NULL) {
         printf("Error loading files....Exiting!!\n");
@@ -230,9 +232,9 @@ int main(int argc, char const *argv[])
     //                      declarations of SDL Game elements
     // //////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////
-    SDL_Surface * gameImage = NULL, * sprite = NULL;
+    SDL_Surface * gameImage = NULL, * sprite = NULL, * scoreboardImage = NULL;
     SDL_Rect playerPosition, spriteFrame;
-    int colorKey     = SDL_MapRGB(screen->format, 255, 0, 255);
+    int colorKey     = SDL_MapRGB(screen->format, 255, 255, 255);
     int quitGameLoop = 0;
 
     // //////////////////////////////////////////////////////////////////////
@@ -240,8 +242,9 @@ int main(int argc, char const *argv[])
     //                  Changing SDL window properties
     // //////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////
+    screen = SDL_SetVideoMode(SCREEN_WIDTH + 200, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE);
     SDL_WM_SetCaption("Start your quest in Pokemon MMORPG", NULL);
-    SDL_EnableKeyRepeat(70, 70);
+    SDL_EnableKeyRepeat(40, 40);
 
 
     // //////////////////////////////////////////////////////////////////////
@@ -250,7 +253,9 @@ int main(int argc, char const *argv[])
     // //////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////
     gameImage = load_image("./../src/client/GUIGraphics/game.jpg");
-    sprite    = load_image("./../src/client/GUIGraphics/sprite.bmp");
+    scoreboardImage = load_image("./../src/client/GUIGraphics/scoreboard.jpg");
+    // sprite    = load_image("./../src/client/GUIGraphics/sprite.bmp");
+    sprite    = load_image("./../src/client/GUIGraphics/sprite2.png");
     SDL_SetColorKey(sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorKey);
 
 
@@ -267,10 +272,10 @@ int main(int argc, char const *argv[])
     playerPosition.x = x - xImageLeft;
     playerPosition.y = y - yImageTop;
 
-    spriteFrame.x = 128;
+    spriteFrame.x = 0;
     spriteFrame.y = 0;
-    spriteFrame.w = 32;
-    spriteFrame.h = 32;
+    spriteFrame.w = 64;
+    spriteFrame.h = 64;
 
 
     ////////////////////////////////////////////////////////////////////////
@@ -295,12 +300,14 @@ int main(int argc, char const *argv[])
             {
                 if (event.key.keysym.sym == SDLK_RIGHT)
                 {
-                    if (spriteFrame.x == 64)
-                    {
-                        spriteFrame.x = 96;
-                    } else {
-                        spriteFrame.x = 64;
-                    }
+                    spriteFrame.y = 128;
+                    spriteFrame.x = (spriteFrame.x + 64)%256;
+                    // if (spriteFrame.x == 0)
+                    // {
+                    //     spriteFrame.x = ;
+                    // } else {
+                    //     spriteFrame.x = 64;
+                    // }
                     if (playerPosition.x >= 480) {
                         xImageLeft -= 5;
                     } else {
@@ -312,11 +319,13 @@ int main(int argc, char const *argv[])
                 }
 
                 if (event.key.keysym.sym == SDLK_LEFT) {
-                    if (spriteFrame.x == 192) {
-                        spriteFrame.x = 224;
-                    } else {
-                        spriteFrame.x = 192;
-                    }
+                    spriteFrame.y = 64;
+                    spriteFrame.x = (spriteFrame.x + 64)%256;
+                    // if (spriteFrame.x == 192) {
+                    //     spriteFrame.x = 224;
+                    // } else {
+                    //     spriteFrame.x = 192;
+                    // }
                     if (playerPosition.x <= 160) {
                         xImageLeft += 5;
                     } else {
@@ -328,11 +337,13 @@ int main(int argc, char const *argv[])
                 }
 
                 if (event.key.keysym.sym == SDLK_DOWN) {
-                    if (spriteFrame.x == 128) {
-                        spriteFrame.x = 160;
-                    } else {
-                        spriteFrame.x = 128;
-                    }
+                    spriteFrame.y = 0;
+                    spriteFrame.x = (spriteFrame.x + 64)%256;
+                    // if (spriteFrame.x == 128) {
+                    //     spriteFrame.x = 160;
+                    // } else {
+                    //     spriteFrame.x = 128;
+                    // }
                     if (playerPosition.y >= 360) {
                         yImageTop -= 5;
                     } else {
@@ -344,11 +355,13 @@ int main(int argc, char const *argv[])
                 }
 
                 if (event.key.keysym.sym == SDLK_UP) {
-                    if (spriteFrame.x == 0) {
-                        spriteFrame.x = 32;
-                    } else {
-                        spriteFrame.x = 0;
-                    }
+                    spriteFrame.y = 192;
+                    spriteFrame.x = (spriteFrame.x + 64)%256;
+                    // if (spriteFrame.x == 0) {
+                    //     spriteFrame.x = 32;
+                    // } else {
+                    //     spriteFrame.x = 0;
+                    // }
                     if (playerPosition.y <= 120) {
                         yImageTop += 5;
                     } else {
@@ -364,9 +377,10 @@ int main(int argc, char const *argv[])
             }
         }
         render_background(xImageLeft, yImageTop, gameImage, screen);
-        render_players(hashtable, screen, sprite, xImageLeft, yImageTop);
+        render_players(hashtable, screen, sprite, xImageLeft, yImageTop, fontSmall);
         // apply_surface(xImageLeft, yImageTop, gameImage, screen);
         SDL_BlitSurface(sprite, &spriteFrame, screen, &playerPosition);
+        render_scoreboard(screen, scoreboardImage);
         SDL_UpdateRect(screen, 0, 0, 0, 0);
     }
 

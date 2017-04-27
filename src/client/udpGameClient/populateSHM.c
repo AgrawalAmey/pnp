@@ -10,6 +10,10 @@ void populateSHM(struct hashTable * hashtable, char * userPositions){
 
 	int i = 1;
 
+	// for(i=1;i<=hashtable->size;i++){
+	// 	strcpy(hashtable->list[i].username, "");
+	// }
+
 	for(i=1;i<=entries;i++){
 		strcpy(hashtable->list[i].username, positionArray[2*i - 1]);
 		char ** positions = strSplit(positionArray[2*i], ':');

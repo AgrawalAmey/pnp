@@ -13,6 +13,7 @@ client:
 	../src/client/GUIUtils/apply_surface.c \
 	../src/client/GUIUtils/render_background.c \
 	../src/client/GUIUtils/render_players.c \
+	../src/client/GUIUtils/render_scoreboard.c \
 	../src/client/GUIUtils/handle_input.c \
 	../src/client/GUIUtils/hashtable.c \
 	../src/client/GUIUtils/initializeSHM.c \
