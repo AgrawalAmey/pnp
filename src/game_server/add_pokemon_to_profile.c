@@ -8,22 +8,21 @@
  *      username:string,
  *      pokedexId:int32,
  *      level: int32,
- *      hp: int32
+ *      xp: int32
  *  }
  */
 
 /**
  * [addPokemon Inserts pet pokemons into mongodb]
- * @param  pokemonId       [16 byte string PokemonId returned if successful]
  * @param  username
  * @param  pokedexId
  * @param  level
- * @param  hp
+ * @param  xp
  * @param  mongoConnection
  * @return                 [Success value]
  */
 int
-addPokemon(char * pokemonId, char * username, int pokedexId, int level, int hp, MongoConnection mongoConnection)
+addPokemon(char * username, int pokedexId, int level, int xp, MongoConnection mongoConnection)
 {
     bson_t * document;
     bson_error_t error;
@@ -33,11 +32,10 @@ addPokemon(char * pokemonId, char * username, int pokedexId, int level, int hp, 
     random_string(pokemonId, 16);
     // Create user bson
     document = bson_new();
-    BSON_APPEND_UTF8(document, "_id", pokemonId);
     BSON_APPEND_UTF8(document, "username", username);
     BSON_APPEND_INT(document, "pokedexId", pokedexId);
     BSON_APPEND_INT(document, "level", level);
-    BSON_APPEND_INT(document, "hp", hp);
+    BSON_APPEND_INT(document, "xp", xp);
 
     // Insert pokemon
     if (!mongoc_collection_insert(mongoConnection.pokemon, MONGOC_INSERT_NONE, document, NULL, &error)) {
