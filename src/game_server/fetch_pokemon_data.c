@@ -5,7 +5,7 @@
 void
 fetchPokemonData(pokemon * pok, char * pokemonId, MongoConnection mongoConnection)
 {
-    int pokedexId;
+    double pokedexId;
     bson_t * query;
     const bson_t * doc;
     mongoc_cursor_t * cursor;
@@ -21,7 +21,7 @@ fetchPokemonData(pokemon * pok, char * pokemonId, MongoConnection mongoConnectio
     mongoc_cursor_next(cursor, &doc)
 
     bson_iter_init_find(&iter, &doc, "pokedex_id");
-    pokedexId = bson_iter_int32(&iter);
+    pokedexId = bson_iter_double(&iter);
     bson_iter_find(&iter, "level");
     pok->level = bson_iter_int32(&iter);
     bson_iter_find(&iter, "xp");
@@ -32,7 +32,7 @@ fetchPokemonData(pokemon * pok, char * pokemonId, MongoConnection mongoConnectio
     mongoc_cursor_destroy(cursor);
 
     query = bson_new();
-    BSON_APPEND_int32(query, "id", pokedexId);
+    BSON_APPEND_DOUBLE(query, "id", pokedexId);
 
     // Get cursor
     cursor = mongoc_collection_find(mongoConnection.pokedex, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);

@@ -29,7 +29,7 @@ main()
 
     // Fork out tcp server
     if (fork() == 0) {
-        // tcpServer(mongoConnection, redisConnection);
+        tcpServer(mongoConnection, redisConnection);
         exit(1);
     }
 

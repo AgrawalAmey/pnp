@@ -1,6 +1,7 @@
 #include "../utils/includes.h"
 #include "../utils/utils.h"
 #include "./login_server.h"
+#include "../game_server/game_server.h"
 
 void
 tcpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
@@ -93,6 +94,10 @@ tcpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
             } else {
                 strcpy(outBuffer, "duplicate");
             }
+
+            // username, pokedexId, level, xp
+            // Some weired stuff to randomly select betweeen the three base pokemons
+            addPokemon(userDetails[2], (((rand() % 3) * 3) + 1), 1, 15, mongoConnection);
 
             send(newSocket, outBuffer, 1024, 0);
 

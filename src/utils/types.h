@@ -56,4 +56,10 @@ typedef struct{
     int bp;
 } move;
 
+
+typedef struct {
+    int level;
+    int xp;
+    char name[20];
+} user;
 #endif // TYPES

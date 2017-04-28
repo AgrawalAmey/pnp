@@ -18,4 +18,8 @@ char * assignSessionKey(char * sessionKey, char * username, redisContext * redis
 // Assigns a game server
 char* assignGameServer(char * gameServerAddr, char * username, redisContext * redisConnection);
 
+// Signout
+void
+signout(char * username, redisContext * redisConnection);
+
 #endif // LOGIN_SERVER

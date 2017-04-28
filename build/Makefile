@@ -35,6 +35,7 @@ login_server:
 	../src/login_server/session_key.c \
 	../src/login_server/signup.c \
 	../src/login_server/login.c \
+	../src/game_server/add_pokemon_to_profile.c \
 	-I/usr/local/include/libmongoc-1.0 \
 	-I/usr/local/include/libbson-1.0 \
 	-L/usr/local/lib -lmongoc-1.0 -lsasl2 -lssl -lcrypto -lrt -lbson-1.0 \
@@ -49,6 +50,7 @@ game_server:
 	../src/game_server/index.c \
 	../src/game_server/tcp_server.c \
 	../src/game_server/udp_server.c \
+	../src/game_server/fetch_pokemon_list.c \
 	../src/game_server/validate_session.c \
 	../src/game_server/handle_position.c \
 	-I/usr/local/include/libmongoc-1.0 \

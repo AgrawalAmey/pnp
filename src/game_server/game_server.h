@@ -28,4 +28,12 @@ updatePokemonInfo(char * pokemonId, int new_xp, int new_level, MongoConnection m
 
 int
 addPokemon(char * username, int pokedexId, int level, int xp, MongoConnection mongoConnection);
+
+void
+fetchUserData(user * u, char * username, MongoConnection mongoConnection);
+
+void
+updateUserInfo(char * username, int new_xp, int new_level, MongoConnection mongoConnection);
+
+void fetchPokemonList(char * outBuffer, char * username, MongoConnection mongoConnection);
 #endif // GAME_SERVER

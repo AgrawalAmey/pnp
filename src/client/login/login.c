@@ -22,7 +22,7 @@ login(char * inBuffer, char * preference, char * name, char * username, char * p
     /* Set port number, using htons function to use proper byte order */
     serverAddr.sin_port = htons(10000);
     /* Set IP address to localhost */
-    serverAddr.sin_addr.s_addr = inet_addr("0.0.0.0");
+    serverAddr.sin_addr.s_addr = inet_addr("172.17.48.130");
     /* Set all bits of the padding field to 0 */
     memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 

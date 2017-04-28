@@ -12,24 +12,28 @@
  * @return                 [success value]
  */
 int
-makeBattleSession(char * battleSessioKey, char * username0, char * username1, char * pokemonId,
+makeBattleSession(char * outBuffer, char * username0, char * username1, char * pokemonId,
   redisContext * redisConnection)
 {
     redisReply * reply;
+    char gameSessionKey[16];
 
     // check if the other guy is already ready
     reply = redisCommand(redisConnection, "get ready_for_battle:%s", username1);
-
 
     if (reply->type == REDIS_REPLY_NIL) {
         // Set a flag that tells user is ready with expiry of 20 seconds
         // Set the pokemonId as value
         redisCommand(redisConnection, "set read_for_battle:%s %s ex 20", username0, pokemonId);
 
+        strcpy(outBuffer, "wait");
+
         freeReplyObject(reply);
         return 0;
     } else {
+        strcpy(outBuffer, "start");
         random_string(gameSessionKey, 16);
+        strcat(outBuffer, gameSessionKey);
 
         // Set the ids of battling pokemons
         redisCommand(redisConnection, "set battle_pokemon_%s:%s %s", battleSessioKey, username0, pokemonId);
@@ -45,4 +49,4 @@ makeBattleSession(char * battleSessioKey, char * username0, char * username1, ch
         freeReplyObject(reply);
         return 1;
     }
-}
+} /* makeBattleSession */
