@@ -27,11 +27,10 @@ addPokemon(char * username, int pokedexId, int level, int xp, MongoConnection mo
     bson_t * document;
     bson_error_t error;
     int exitCode;
-    static int count = 0;
 
     // Create user bson
     document = bson_new();
-    BSON_APPEND_INT32(document, "_id", count);
+    BSON_APPEND_INT32(document, "_id", rand());
     BSON_APPEND_UTF8(document, "username", username);
     BSON_APPEND_DOUBLE(document, "pokedexId", pokedexId);
     BSON_APPEND_INT32(document, "level", level);

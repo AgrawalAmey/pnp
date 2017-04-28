@@ -17,7 +17,7 @@ void handlePositionRequest(char * outBuffer, char * username, char * position, l
 
 // Fetch pokemon data from mongo
 void
-fetchPokemonData(pokemon pok, char * pokemonId, MongoConnection mongoConnection);
+fetchPokemonData(pokemon * pok, char * pokemonId, MongoConnection mongoConnection);
 
 // Fetch move data from mongo
 void
@@ -36,4 +36,13 @@ void
 updateUserInfo(char * username, int new_xp, int new_level, MongoConnection mongoConnection);
 
 void fetchPokemonList(char * outBuffer, char * username, MongoConnection mongoConnection);
+
+void
+makeBattleSession(char * outBuffer, char * username0, char * username1, char * pokemonId,
+  int count, MongoConnection mongoConnection, redisContext * redisConnection);
+
+void
+battleStep(char * outBuffer, char * username0, char * username1, char * move, char * battleSessionKey,
+redisContext * redisConnection,
+MongoConnection mongoConnection);
 #endif // GAME_SERVER

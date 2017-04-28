@@ -74,48 +74,39 @@ tcpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
             printf("Error in accepting connection!\n");
             exit(1);
         }
+        // Fork out to handle concurrent requests
+        if (fork() == 0) {
+            /*---- Recieve username and password ----*/
 
-        /*---- Recieve username and password ----*/
+            recv(newSocket, inBuffer, 1024, 0);
 
-        recv(newSocket, inBuffer, 1024, 0);
+            printf("%s\n", inBuffer);
 
-        printf("%s\n", inBuffer);
+            reqTokens = strSplit(inBuffer, ' ');
 
-        reqTokens = strSplit(inBuffer, ' ');
+            sessionValid = validateSession(reqTokens[1], reqTokens[2], *redisConnection);
 
-        sessionValid = validateSession(reqTokens[1], reqTokens[2], *redisConnection);
-
-        if (sessionValid == 1) {
-            if (strcmp(reqTokens[0], "list_pokemons") == 0) {
-                fetchPokemonList(outBuffer, reqTokens[1], mongoConnection);
-            } else if (strcmp(reqTokens[0], "battle_start") == 0) {
-                makeBattleSession(outBuffer, reqTokens[1], reqTokens[3], reqTokens[4], *redisConnection);
+            if (sessionValid == 1) {
+                if (strcmp(reqTokens[0], "list_pokemons") == 0) {
+                    fetchPokemonList(outBuffer, reqTokens[1], mongoConnection);
+                } else if (strcmp(reqTokens[0], "battle_start") == 0) {
+                    makeBattleSession(outBuffer, reqTokens[1], reqTokens[3], reqTokens[4], 0, mongoConnection,
+                      *redisConnection);
+                } else if (strcmp(reqTokens[0], "battle_make_move")) {
+                    battleStep(outBuffer, reqTokens[1], reqTokens[4], reqTokens[5], reqTokens[3], redisConnection,
+                      mongoConnection);
+                } else {
+                    strcpy(outBuffer, "error");
+                }
             } else {
                 strcpy(outBuffer, "error");
             }
-        } else {
-            strcpy(outBuffer, "error");
+
+
+            printf("Sending : %s\n", outBuffer);
+            send(newSocket, outBuffer, 1024, 0);
+
+            close(newSocket);
         }
-
-        send(newSocket, outBuffer, 1024, 0);
-
-        close(newSocket);
-
-        // else if (strcmp(userDetails[0], "login") == 0)
-        // {
-        //         identityVerified = login(userDetails[2], userDetails[3],mongoConnection);
-        //
-        //         /*---- Send appropriate message ----*/
-        //         if (identityVerified == 0) {
-        //                 strcpy(outBuffer, "Logged in succesfully!");
-        //         }
-        //         else if(identityVerified == -1) {
-        //                 strcpy(outBuffer, "Username and/or password Incorrect. Please try again!");
-        //         }
-        //
-        //         send(newSocket, outBuffer, 1024, 0);
-        //
-        //         close(newSocket);
-        // }
     }
 } /* tcpServer */

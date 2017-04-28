@@ -51,6 +51,13 @@ game_server:
 	../src/game_server/tcp_server.c \
 	../src/game_server/udp_server.c \
 	../src/game_server/fetch_pokemon_list.c \
+	../src/game_server/fetch_pokemon_data.c \
+	../src/game_server/fetch_user_data.c \
+	../src/game_server/fetch_move_data.c \
+	../src/game_server/make_battle_session.c \
+	../src/game_server/battle_mechanices.c \
+	../src/game_server/update_pokemon_info.c \
+	../src/game_server/update_user_info.c \
 	../src/game_server/validate_session.c \
 	../src/game_server/handle_position.c \
 	-I/usr/local/include/libmongoc-1.0 \
@@ -58,13 +65,3 @@ game_server:
 	-L/usr/local/lib -lmongoc-1.0 -lsasl2 -lssl -lcrypto -lrt -lbson-1.0 \
 	-D_FILE_OFFSET_BITS=64 -I/usr/local/include/hiredis -L/usr/local/lib -lhiredis \
 	-o game_server.exe
-
-test:
-	gcc -g ../src/test.c \
-	../src/utils/redis.c \
-	../src/utils/split_string.c \
-	-I/usr/local/include/libmongoc-1.0 \
-	-I/usr/local/include/libbson-1.0 \
-	-L/usr/local/lib -lmongoc-1.0 -lsasl2 -lssl -lcrypto -lrt -lbson-1.0 \
-	-D_FILE_OFFSET_BITS=64 -I/usr/local/include/hiredis -L/usr/local/lib -lhiredis \
-	-o test.exe

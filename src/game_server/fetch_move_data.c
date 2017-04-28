@@ -22,7 +22,7 @@ fetchMoveData(move * m, char * move, MongoConnection mongoConnection)
 
     bson_iter_init_find(&iter, &doc, "type");
     strcpy(m->type, bson_iter_utf8(&iter, NULL));
-    bson_iter_find(&iter, "bp");
+    bson_iter_init_find(&iter, "bp");
     pok->bp = bson_iter_int32(&iter);
 
     bson_destroy(query);
