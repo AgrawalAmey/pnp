@@ -371,6 +371,10 @@ int main(int argc, char const *argv[])
                     hashtable->myX = playerPosition.x - xImageLeft;
                     hashtable->myY = playerPosition.y - yImageTop;
                 }
+                if (event.key.keysym.sym == SDLK_b)
+                {
+                    
+                }
             }
             if (event.type == SDL_QUIT) {
                 quitGameLoop = 1;
@@ -387,6 +391,8 @@ int main(int argc, char const *argv[])
     Mix_FreeMusic(music);
     TTF_Quit();
     SDL_Quit();
+
+    
 
     kill(positionPid, SIGKILL);
 
