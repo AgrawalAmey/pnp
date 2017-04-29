@@ -19,7 +19,7 @@ makeBattleSession(char * outBuffer, char * username0, char * username1, char * p
     char gameSessionKey[16];
     char temp[50];
 
-
+    printf("waiting outside\n");
     // check if the other guy is already ready
     reply = redisCommand(redisConnection, "get ready_for_battle:%s", username1);
 

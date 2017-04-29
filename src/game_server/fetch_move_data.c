@@ -20,10 +20,10 @@ fetchMoveData(move * m, char * move, MongoConnection mongoConnection)
     // Get doc
     mongoc_cursor_next(cursor, &doc);
 
-    bson_iter_init_find(&iter, &doc, "type");
+    bson_iter_init_find(&iter, doc, "type");
     strcpy(m->type, bson_iter_utf8(&iter, NULL));
-    bson_iter_init_find(&iter, "bp");
-    pok->bp = bson_iter_int32(&iter);
+    bson_iter_init_find(&iter, doc, "bp");
+    m->bp = bson_iter_int32(&iter);
 
     bson_destroy(query);
     bson_destroy(doc);

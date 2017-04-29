@@ -11,7 +11,7 @@ updatePokemonInfo(char * pokemonId, int new_xp, int new_level, MongoConnection m
     bson_iter_t iter;
 
     query = bson_new();
-    BSON_APPEND_int32(query, "_id", atoi(pokemonId));
+    BSON_APPEND_INT32(query, "_id", atoi(pokemonId));
 
     update = BCON_NEW("$set", "{",
       "xp", BCON_INT32(new_xp),
@@ -19,7 +19,7 @@ updatePokemonInfo(char * pokemonId, int new_xp, int new_level, MongoConnection m
       "}");
 
     // Get cursor
-    mongoc_collection_update(mongoConnection.moves, MONGOC_UPDATE_NONE, query, update, NULL, &error);
+    mongoc_collection_update(mongoConnection.moves, MONGOC_UPDATE_NONE, query, update, NULL, NULL);
 
     bson_destroy(query);
     bson_destroy(update);

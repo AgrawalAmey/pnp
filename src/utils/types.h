@@ -49,6 +49,7 @@ typedef struct{
     int xp;
     int level;
     int health;
+    double id;
 } pokemon;
 
 typedef struct{

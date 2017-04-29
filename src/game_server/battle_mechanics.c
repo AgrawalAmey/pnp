@@ -14,13 +14,13 @@
 
 // Make a step in the battle
 void
-battleStep(char * outBuffer, char * username0, char * username1, char * move, char * battleSessionKey,
+battleStep(char * outBuffer, char * username0, char * username1, char * move_str, char * battleSessionKey,
   redisContext * redisConnection,
   MongoConnection mongoConnection)
 {
     redisReply * reply;
 
-    char * pokemonId0[16], pokemonId1[16];
+    char pokemonId0[16], pokemonId1[16];
 
     // //////////////////////////////////////////
     // Verify if it is actually user0's step   //
@@ -32,11 +32,13 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
     if (reply->type == REDIS_REPLY_STRING) {
         if (strcmp(reply->str, username0) != 0) {
             // Not user 1's turn
-            return -1;
+            strcpy(outBuffer, "invalid_turn");
+            return;
         }
     } else {
         // Invalid battle session
-        return -2;
+        strcpy(outBuffer, "invalid_game_session");
+        return;
     }
 
     freeReplyObject(reply);
@@ -45,11 +47,11 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
     // Get the pokemon id of both pokemons //
     // ///////////////////////////////////////
 
-    reply = redisCommand(redisConnection, "get battle_pokemon_%s:%s", battleSessioKey, username0);
+    reply = redisCommand(redisConnection, "get battle_pokemon_%s:%s", battleSessionKey, username0);
     strcpy(pokemonId0, reply->str);
     freeReplyObject(reply);
 
-    reply = redisCommand(redisConnection, "get battle_pokemon_%s:%s", battleSessioKey, username1);
+    reply = redisCommand(redisConnection, "get battle_pokemon_%s:%s", battleSessionKey, username1);
     strcpy(pokemonId1, reply->str);
     freeReplyObject(reply);
 
@@ -68,7 +70,7 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
 
     int health;
 
-    reply  = redisCommand(redisConnection, "get battle_pokemon_health_%s:%s", battleSessioKey, username1);
+    reply  = redisCommand(redisConnection, "get battle_pokemon_health_%s:%s", battleSessionKey, username1);
     health = atoi(reply->str);
     freeReplyObject(reply);
 
@@ -77,7 +79,7 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
     // /////////////////
 
     move m;
-    fetchMoveData(&m, move, mongoConnection);
+    fetchMoveData(&m, move_str, mongoConnection);
 
     // /////////////////////
     // Calculate damaage //
@@ -90,7 +92,7 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
 
     damage = (((2 * pokemon0.level / 5) + 2) * m.bp);
 
-    if (strcmp(m->type, "normal") == 0) {
+    if (strcmp(m.type, "normal") == 0) {
         damage *= pokemon0.attack;
         damage /= pokemon1.defense;
     } else {
@@ -108,7 +110,7 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
 
     damage *= random_flt;
 
-    if (strcmp(m->type, pokemon0->type) == 0) {
+    if (strcmp(m.type, pokemon0.type0) == 0 || strcmp(m.type, pokemon0.type1) == 0) {
         damage *= 1.5;
     }
 
@@ -190,7 +192,7 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
     // /////////////////////////////////////////
     // Update the health of attacked pokemon //
     // /////////////////////////////////////////
-    redisCommand(redisConnection, "set battle_pokemon_health_%s:%s %d", battleSessioKey, username1, health - damage_int);
+    redisCommand(redisConnection, "set battle_pokemon_health_%s:%s %d", battleSessionKey, username1, health - damage_int);
 
     // ///////////////
     // Update turn //
@@ -207,11 +209,13 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
     } else {
         strcat(outBuffer, "over");
     }
+    char tempBuffer[20];
+
     strcat(outBuffer, " ");
     strcat(outBuffer, username0);
     strcat(outBuffer, " ");
-    strcat(outBuffer, health - damage_int);
-    strcat(outBuffer, " ");
+    sprintf(tempBuffer, "%d ", health - damage_int);
+    strcat(outBuffer, tempBuffer);
 
     // /////////////////////
     // /////////////////////
@@ -235,7 +239,7 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
         xp_gain *= 1.5;
     }
 
-    xp_gain *= expgrowth;
+    xp_gain *= pokemon0.expgrowth;
     xp_gain *= pokemon0.level;
     xp_gain *= pokemon1.level;
 
@@ -247,23 +251,26 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
         new_level++;
     }
 
-    strcat(outBuffer, new_xp);
-    struct (outBuffer, new_level);
+    sprintf(tempBuffer, "%d ", new_xp);
+    strcat(outBuffer, tempBuffer);
+    sprintf(tempBuffer, "%d ", new_level);
+    strcat(outBuffer, tempBuffer);
+
 
     // Update pokeomn info in mongo
-    updatePokemonInfo(pokemonId0, new_xp, new_level);
+    updatePokemonInfo(pokemonId0, new_xp, new_level, mongoConnection);
 
     // ///////////////////////////////////
     // Fetch and udpate user stats     //
     // ///////////////////////////////////
 
     user u;
-    fetchUserData(u, username0, mongoConnection);
+    fetchUserData(&u, username0, mongoConnection);
 
-    new_xp    = u->xp + 10;
-    new_level = u->level;
+    new_xp    = u.xp + 10;
+    new_level = u.level;
 
-    if (new_xp >= (50 * (u->level + 1))) {
+    if (new_xp >= (50 * (u.level + 1))) {
         new_level++;
     }
 
@@ -272,5 +279,5 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move, ch
     // ///////////////////////////////////////////////////////////
     // If the loosing pokemon was wild add it to users profile //
     // ///////////////////////////////////////////////////////////
-    addPokemon(username0, pokedexId1, pokemon1.level, pokemon1.xp, mongoConnection);
+    addPokemon(username0, pokemon1.id, pokemon1.level, pokemon1.xp, mongoConnection);
 } /* battleStep */
