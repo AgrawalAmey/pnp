@@ -61,16 +61,9 @@ udpGameClient(struct hashTable * hashtable, char * sessionKey, char * serverStr,
 
         populateSHM(hashtable, inBuffer);
 
-<<<<<<< HEAD
-        // usleep(40000);
-        usleep(1000000);
-    }
-} /* udpGameClient */
-=======
 		// usleep(40000);
-		// usleep(100000);
-		usleep(50000);
+		usleep(1000000);
+		// usleep(50000);
 	}
 
 }
->>>>>>> c3d3cad19cb62e78cfc7a0ab97dcf2586ef6d1da

@@ -23,4 +23,6 @@ void render_players(struct hashTable * hashtable, SDL_Surface * screen, SDL_Surf
 
 void render_scoreboard(SDL_Surface * screen, SDL_Surface * scoreboard);
 
+void render_pokemons(char * buffer, SDL_Surface * screen);
+
 #endif // GUIUTILS

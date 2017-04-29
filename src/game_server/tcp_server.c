@@ -89,7 +89,7 @@ tcpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
             if (strcmp(reqTokens[0], "list_pokemons") == 0) {
                 fetchPokemonList(outBuffer, reqTokens[1], mongoConnection);
             } else if (strcmp(reqTokens[0], "battle_start") == 0) {
-                makeBattleSession(outBuffer, reqTokens[1], reqTokens[3], reqTokens[4], *redisConnection);
+                // makeBattleSession(outBuffer, reqTokens[1], reqTokens[3], reqTokens[4], *redisConnection);
             } else {
                 strcpy(outBuffer, "error");
             }

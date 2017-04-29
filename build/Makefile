@@ -12,6 +12,7 @@ client:
 	../src/client/GUIUtils/append.c \
 	../src/client/GUIUtils/apply_surface.c \
 	../src/client/GUIUtils/render_background.c \
+	../src/client/GUIUtils/render_pokemons.c \
 	../src/client/GUIUtils/render_players.c \
 	../src/client/GUIUtils/render_scoreboard.c \
 	../src/client/GUIUtils/handle_input.c \

@@ -118,6 +118,7 @@ int main(int argc, char const *argv[])
                     SDL_FreeSurface(message2);
                     message2 = TTF_RenderText_Solid(font, "Connecting to the serever...", textColor);
                     login(result, "login", "name", name->str, pwd->str);
+                    // exit(1);
                     // printf("%s\n", result);
                     if (result[0] == 's') {
                         loginReturn = 1;
@@ -292,6 +293,8 @@ int main(int argc, char const *argv[])
         exit(1);
     }
     
+    char pokeInbuffer[1024];
+    int selectPokemon = 0;
 
     while(quitGameLoop == 0){
         if (SDL_PollEvent(&event))
@@ -373,6 +376,67 @@ int main(int argc, char const *argv[])
                 }
                 if (event.key.keysym.sym == SDLK_b)
                 {
+                    kill(positionPid, SIGKILL);
+
+                    char ** serverAddressEntity;
+
+                    serverAddressEntity = strSplit(gameServerAddress, ':');
+                    int portNum = atoi(serverAddressEntity[1]);
+
+                    int clientSocket;
+                    clientSocket = socket(PF_INET, SOCK_STREAM, 0);
+
+                    struct sockaddr_in tcpServer;
+                    tcpServer.sin_family = AF_INET;
+                    tcpServer.sin_port = htons(portNum);
+                    tcpServer.sin_addr.s_addr = inet_addr(serverAddressEntity[0]);
+
+                    memset(tcpServer.sin_zero, '\0', sizeof tcpServer.sin_zero);
+                    socklen_t addr_size = sizeof tcpServer;
+                    if (connect(clientSocket, (struct sockaddr *) &tcpServer, addr_size) < 0) {
+                        printf("Connect Failed\n");
+                        kill(positionPid, SIGKILL);
+                        exit(1);
+                    }
+                    printf("Connected to tcp game server\n");
+
+
+                    char pokeBuffer[1024] = { '\0' };
+                    strcpy(pokeBuffer, "list_pokemons ");
+                    strcat(pokeBuffer, name->str);
+                    strcat(pokeBuffer, " ");
+                    strcat(pokeBuffer, sessionKey);
+
+                    printf("%s\n", pokeBuffer);
+                    send(clientSocket, pokeBuffer, 1024, 0);
+
+                    
+                    recv(clientSocket, pokeInbuffer, 1024, 0);
+                    printf("%s\n", pokeInbuffer);
+
+                    SDL_WM_SetCaption("Select your Pokemon...", NULL);
+                    render_pokemons(pokeInbuffer, screen);
+                    SDL_UpdateRect(screen, 0, 0, 0, 0);
+
+                    selectPokemon = 1;
+
+                    char battleBuffer[1024] = {'\0'};
+                    strcpy(battleBuffer, "battle_start ");
+                    strcat(battleBuffer, name->str);
+                    strcat(battleBuffer, " ");
+                    strcat(battleBuffer, sessionKey);
+                    strcat(battleBuffer, " ");
+                    strcat(battleBuffer, "s");
+
+                    printf("%s\n", battleBuffer);
+                    send(clientSocket, battleBuffer, 1024, 0);
+
+                    char battleInbuffer[1024] = {'\0'};
+                    recv(clientSocket, pokeInbuffer, 1024, 0);
+                    printf("%s\n", pokeInbuffer);
+
+                    // exit(1);
+
                     
                 }
             }
@@ -385,6 +449,10 @@ int main(int argc, char const *argv[])
         // apply_surface(xImageLeft, yImageTop, gameImage, screen);
         SDL_BlitSurface(sprite, &spriteFrame, screen, &playerPosition);
         render_scoreboard(screen, scoreboardImage);
+        // if (selectPokemon == 1)
+        // {
+        //     render_pokemons(pokeInbuffer, screen);
+        // }
         SDL_UpdateRect(screen, 0, 0, 0, 0);
     }
 

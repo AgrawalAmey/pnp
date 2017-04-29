@@ -1,6 +1,6 @@
 #include "../utils/includes.h"
 #include "../utils/utils.h"
-#include "./login_server.h"
+#include "./game_server.h"
 
 /**
  * [makeBattleSession creates unique battle session key when both the users are ready]
