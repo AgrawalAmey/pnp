@@ -19,7 +19,7 @@ updateUserInfo(char * username, int new_xp, int new_level, MongoConnection mongo
       "}");
 
     // Get cursor
-    mongoc_collection_update(mongoConnection.moves, MONGOC_UPDATE_NONE, query, update, NULL, &error);
+    mongoc_collection_update(mongoConnection.moves, MONGOC_UPDATE_NONE, query, update, NULL, NULL);
 
     bson_destroy(query);
     bson_destroy(update);

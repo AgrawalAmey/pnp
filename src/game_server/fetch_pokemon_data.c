@@ -22,6 +22,7 @@ fetchPokemonData(pokemon * pok, char * pokemonId, MongoConnection mongoConnectio
 
     bson_iter_init_find(&iter, doc, "pokedexId");
     pokedexId = bson_iter_double(&iter);
+    pok->id = pokedexId;
     bson_iter_find(&iter, "level");
     pok->level = bson_iter_int32(&iter);
     bson_iter_find(&iter, "xp");

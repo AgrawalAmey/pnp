@@ -26,4 +26,6 @@ char * hash(char * password);
 int
 startsWith(const char * pre, const char * str);
 
+int pow(int x, unsigned int y);
+
 #endif // UTILS

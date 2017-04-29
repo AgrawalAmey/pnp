@@ -15,6 +15,7 @@ client:
 	../src/client/GUIUtils/render_pokemons.c \
 	../src/client/GUIUtils/render_players.c \
 	../src/client/GUIUtils/render_scoreboard.c \
+	../src/client/GUIUtils/render_battle.c \
 	../src/client/GUIUtils/handle_input.c \
 	../src/client/GUIUtils/hashtable.c \
 	../src/client/GUIUtils/initializeSHM.c \
@@ -47,7 +48,9 @@ game_server:
 	gcc -g ../src/utils/mongo.c \
 	../src/utils/redis.c \
 	../src/utils/rand.c \
+	../src/utils/starts_with.c \
 	../src/utils/split_string.c \
+	../src/utils/pow.c \
 	../src/game_server/index.c \
 	../src/game_server/tcp_server.c \
 	../src/game_server/udp_server.c \
@@ -56,7 +59,8 @@ game_server:
 	../src/game_server/fetch_user_data.c \
 	../src/game_server/fetch_move_data.c \
 	../src/game_server/make_battle_session.c \
-	../src/game_server/battle_mechanices.c \
+	../src/game_server/add_pokemon_to_profile.c \
+	../src/game_server/battle_mechanics.c \
 	../src/game_server/update_pokemon_info.c \
 	../src/game_server/update_user_info.c \
 	../src/game_server/validate_session.c \

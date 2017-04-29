@@ -233,7 +233,7 @@ int main(int argc, char const *argv[])
     //                      declarations of SDL Game elements
     // //////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////
-    SDL_Surface * gameImage = NULL, * sprite = NULL, * scoreboardImage = NULL;
+    SDL_Surface * gameImage = NULL, * sprite = NULL, * scoreboardImage = NULL, * battleImage = NULL;
     SDL_Rect playerPosition, spriteFrame;
     int colorKey     = SDL_MapRGB(screen->format, 255, 255, 255);
     int quitGameLoop = 0;
@@ -254,6 +254,7 @@ int main(int argc, char const *argv[])
     // //////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////
     gameImage = load_image("./../src/client/GUIGraphics/game.jpg");
+    battleImage = load_image("./../src/client/GUIGraphics/money.gif");
     scoreboardImage = load_image("./../src/client/GUIGraphics/scoreboard.jpg");
     // sprite    = load_image("./../src/client/GUIGraphics/sprite.bmp");
     sprite    = load_image("./../src/client/GUIGraphics/sprite2.png");
@@ -294,7 +295,9 @@ int main(int argc, char const *argv[])
     }
     
     char pokeInbuffer[1024];
+    char battleInbuffer[1024] = {'\0'};
     int selectPokemon = 0;
+    int battleStatus = 0;
 
     while(quitGameLoop == 0){
         if (SDL_PollEvent(&event))
@@ -414,11 +417,30 @@ int main(int argc, char const *argv[])
                     recv(clientSocket, pokeInbuffer, 1024, 0);
                     printf("%s\n", pokeInbuffer);
 
-                    SDL_WM_SetCaption("Select your Pokemon...", NULL);
-                    render_pokemons(pokeInbuffer, screen);
-                    SDL_UpdateRect(screen, 0, 0, 0, 0);
+                    char ** pokemonNumber = strSplit(pokeInbuffer, ' ');
+
+                    // SDL_WM_SetCaption("Select your Pokemon...", NULL);
+                    // render_pokemons(pokeInbuffer, screen);
+                    // SDL_UpdateRect(screen, 0, 0, 0, 0);
 
                     selectPokemon = 1;
+
+                    int clientSocket2;
+                    clientSocket2 = socket(PF_INET, SOCK_STREAM, 0);
+
+                    struct sockaddr_in tcpServer2;
+                    tcpServer2.sin_family = AF_INET;
+                    tcpServer2.sin_port = htons(portNum);
+                    tcpServer2.sin_addr.s_addr = inet_addr(serverAddressEntity[0]);
+
+                    memset(tcpServer2.sin_zero, '\0', sizeof tcpServer2.sin_zero);
+                    socklen_t addr_size2 = sizeof tcpServer2;
+                    if (connect(clientSocket2, (struct sockaddr *) &tcpServer2, addr_size2) < 0) {
+                        printf("Connect Failed\n");
+                        kill(positionPid, SIGKILL);
+                        exit(1);
+                    }
+                    printf("Connected to tcp game server\n");
 
                     char battleBuffer[1024] = {'\0'};
                     strcpy(battleBuffer, "battle_start ");
@@ -426,14 +448,42 @@ int main(int argc, char const *argv[])
                     strcat(battleBuffer, " ");
                     strcat(battleBuffer, sessionKey);
                     strcat(battleBuffer, " ");
-                    strcat(battleBuffer, "s");
+                    if (name->str[0] == 'a')
+                    {
+                       strcat(battleBuffer, "s"); 
+                    }
+                    if (name->str[0] == 's')
+                    {
+                       strcat(battleBuffer, "a"); 
+                    }
+                    strcat(battleBuffer, " ");
+                    strcat(battleBuffer, pokemonNumber[1]);
+
+
 
                     printf("%s\n", battleBuffer);
-                    send(clientSocket, battleBuffer, 1024, 0);
+                    send(clientSocket2, battleBuffer, 1024, 0);
 
-                    char battleInbuffer[1024] = {'\0'};
-                    recv(clientSocket, pokeInbuffer, 1024, 0);
-                    printf("%s\n", pokeInbuffer);
+                    
+                    recv(clientSocket2, battleInbuffer, 1024, 0);
+                    printf("%s\n", battleInbuffer);
+
+                    if (battleInbuffer[0] == 'l')
+                    {
+                        // int positionPid2;
+                        printf("Never come here\n");
+                        if ((positionPid = fork()) == 0)
+                        {
+                            //child process code
+                            // udpGameClient(hashtable, sessionKey, gameServerAddress, name->str);
+                            udpGameClient(hashtable, sessionKey, gameServerAddress, name->str);
+                            exit(1);
+                        }
+                    }
+                    else
+                    {
+                        battleStatus = 1;
+                    }
 
                     // exit(1);
 
@@ -449,6 +499,21 @@ int main(int argc, char const *argv[])
         // apply_surface(xImageLeft, yImageTop, gameImage, screen);
         SDL_BlitSurface(sprite, &spriteFrame, screen, &playerPosition);
         render_scoreboard(screen, scoreboardImage);
+        if (battleStatus == 1)
+        {
+            apply_surface(0, 0, battleImage, screen);
+            // char ** entries = strSplit(battleInbuffer, ' ');
+            // printf("%s %s\n", entries[2], entries[9]);
+            // SDL_Surface * user1 = NULL, * user2 = NULL, * poke1 = NULL, * poke2 = NULL;
+            // SDL_Color textColor2 = { 0xFF, 0xFF, 0xFF };
+            // user1 = TTF_RenderText_Solid(fontSmall, entries[2], textColor2);
+            // user2 = TTF_RenderText_Solid(fontSmall, entries[9], textColor2);
+            // poke1 = TTF_RenderText_Solid(font, , textColor);
+            // poke2 = TTF_RenderText_Solid(font, , textColor);
+            // apply_surface(100, 600, user1, screen);
+            // apply_surface(400, 100, user2, screen); 
+            // render_battle(entries[2], entries[9], strcat(entries[6], ".png"), strcat(entries[13], ".png"), battleImage, screen, fontSmall);
+        }
         // if (selectPokemon == 1)
         // {
         //     render_pokemons(pokeInbuffer, screen);
