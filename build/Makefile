@@ -36,6 +36,7 @@ login_server:
 	../src/login_server/load_balancer.c \
 	../src/login_server/session_key.c \
 	../src/login_server/signup.c \
+	../src/login_server/signout.c \
 	../src/login_server/login.c \
 	../src/game_server/add_pokemon_to_profile.c \
 	-I/usr/local/include/libmongoc-1.0 \

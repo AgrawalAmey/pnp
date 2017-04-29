@@ -124,3 +124,22 @@ Index |    Feild Name     |                     Explanation
   4   |  user new level   |  new level of the attacking user if battle is over
   5   |  pokemon new xp   |  new xp of the attacking pokemon if battle is over
   6   | pokemon new level | new level of the attacking pokemon if battle is over
+
+Scoreboard Request
+
+Index |     Feild Name     |    Explanation
+:---: | :----------------: | :------------------:
+  0   |        Type        | "get_leader_board"
+  1   |      Username      |         -
+  2   |    Session Key     |         -
+
+
+Scoreboard Response
+
+Index |     Feild Name     | Explanation
+:---: | :----------------: | :---------:
+  0   | Number of players  |      -
+  1   |    PlayersId[0]    |      -
+  2   |    PokedexId[0]    |      -
+  3   |       XP[0]        |      -
+  4   |      Level[0]      |      -

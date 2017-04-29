@@ -121,6 +121,12 @@ tcpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
             send(newSocket, outBuffer, 1024, 0);
 
             close(newSocket);
+        } else if (strcmp(userDetails[0], "signout") == 0) {
+            // Type, name, username, password
+            /*---- Send appropriate message ----*/
+            signout(userDetails[1], *redisConnection);
+
+            close(newSocket);
         }
     }
 } /* tcpServer */
