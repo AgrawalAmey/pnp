@@ -50,7 +50,7 @@ game_server:
 	../src/utils/rand.c \
 	../src/utils/starts_with.c \
 	../src/utils/split_string.c \
-	../src/utils/pow.c \
+	../src/utils/power.c \
 	../src/game_server/index.c \
 	../src/game_server/tcp_server.c \
 	../src/game_server/udp_server.c \

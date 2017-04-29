@@ -247,7 +247,7 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move_str
 
     new_xp = pokemon0.xp + (int) xp_gain;
 
-    if (new_xp >= (5 * pow(pokemon0.level + 1, 3) / 4)) {
+    if (new_xp >= (5 * power(pokemon0.level + 1, 3) / 4)) {
         new_level++;
     }
 
