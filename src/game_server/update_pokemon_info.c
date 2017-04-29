@@ -11,7 +11,7 @@ updatePokemonInfo(char * pokemonId, int new_xp, int new_level, MongoConnection m
     bson_iter_t iter;
 
     query = bson_new();
-    BSON_APPEND_UTF8(query, "_id", pokemonId);
+    BSON_APPEND_int32(query, "_id", atoi(pokemonId));
 
     update = BCON_NEW("$set", "{",
       "xp", BCON_INT32(new_xp),

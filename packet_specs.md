@@ -24,14 +24,14 @@ Signout request
 
 Index | Feild Name | Explanation
 :---: | :--------: | :---------:
-0   |    Type    |  "signout"
-1   |  Username  |      -
+  0   |    Type    |  "signout"
+  1   |  Username  |      -
 
 Signout response
 
 Index |  Feild Name   | Explanation
 :---: | :-----------: | :---------:
-0   | "dasvisaniya" |      -
+  0   | "dasvisaniya" |      -
 
 ## Game Server
 
@@ -83,22 +83,24 @@ Index |    Feild Name     |                  Explanation
 
 Battle initialization response/brodcast
 
-Index |     Feild Name     |     Explanation
-:---: | :----------------: | :------------------:
-  0   |       status       | "waiting" or "start"
-  1   | Battle Session Key |          -
-  2   |     Username0      |          -
-  3   |    Username0 XP    |          -
-  4   |  Username0 Level   |          -
-  5   |   Pokemon0 Name    |          -
-  6   |    Pokemon0 XP     |          -
-  7   |   Pokemon0 Level   |          -
-  8   |     Username0      |          -
-  9   |    Username0 XP    |          -
- 10   |  Username0 Level   |          -
- 11   |   Pokemon0 Name    |          -
- 12   |    Pokemon0 XP     |          -
- 13   |   Pokemon0 Level   |          -
+Index |     Feild Name     |    Explanation
+:---: | :----------------: | :---------------:
+  0   |       status       | "start" or "lite"
+  1   | Battle Session Key |         -
+  2   |     Username0      |         -
+  3   |     User0 Name     |         -
+  4   |    Username0 XP    |         -
+  5   |  Username0 Level   |         -
+  6   |   Pokemon0 Name    |         -
+  7   |    Pokemon0 XP     |         -
+  8   |   Pokemon0 Level   |         -
+  9   |     Username1      |         -
+ 10   |     User1 Name     |         -
+ 11   |    Username1 XP    |         -
+ 12   |  Username1 Level   |         -
+ 13   |   Pokemon1 Name    |         -
+ 14   |    Pokemon1 XP     |         -
+ 15   |   Pokemon1 Level   |         -
 
 Battle move request
 
