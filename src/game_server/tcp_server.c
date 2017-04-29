@@ -95,7 +95,9 @@ tcpServer(MongoConnection mongoConnection, redisContext ** redisConnection)
                 } else if (strcmp(reqTokens[0], "battle_make_move")) {
                     battleStep(outBuffer, reqTokens[1], reqTokens[4], reqTokens[5], reqTokens[3], redisConnection,
                       mongoConnection);
-                } else {
+                } else if(strcmp(reqTokens[0], "get_leader_board"){
+			fetchLeaderBoard(outBuffer, mongoConnection);		
+		}else {
                     strcpy(outBuffer, "error");
                 }
             } else {

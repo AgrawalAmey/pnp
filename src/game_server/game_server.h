@@ -45,4 +45,7 @@ void
 battleStep(char * outBuffer, char * username0, char * username1, char * move, char * battleSessionKey,
 redisContext * redisConnection,
 MongoConnection mongoConnection);
+
+void
+fetchLeaderBoard(char * outBuffer, MongoConnection mongoConnection);
 #endif // GAME_SERVER

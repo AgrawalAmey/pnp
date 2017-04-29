@@ -51,7 +51,7 @@ game_server:
 	../src/game_server/tcp_server.c \
 	../src/game_server/udp_server.c \
 	../src/game_server/fetch_pokemon_list.c \
-	../src/game_server/fetch_leader_board.c \
+        ../src/game_server/fetch_leader_board.c \
 	../src/game_server/fetch_pokemon_data.c \
 	../src/game_server/fetch_user_data.c \
 	../src/game_server/fetch_move_data.c \
