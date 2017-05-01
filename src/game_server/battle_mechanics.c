@@ -192,7 +192,8 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move_str
     // /////////////////////////////////////////
     // Update the health of attacked pokemon //
     // /////////////////////////////////////////
-    redisCommand(redisConnection, "set battle_pokemon_health_%s:%s %d", battleSessionKey, username1, health - damage_int);
+    redisCommand(redisConnection, "set battle_pokemon_health_%s:%s %d", battleSessionKey, username1,
+      health - damage_int);
 
     // ///////////////
     // Update turn //
@@ -205,9 +206,9 @@ battleStep(char * outBuffer, char * username0, char * username1, char * move_str
 
     // (ongoing/over) (username of acting player) (new health of other player)
     if (health - damage_int > 0) {
-        strcat(outBuffer, "ongoing");
+        strcpy(outBuffer, "ongoing");
     } else {
-        strcat(outBuffer, "over");
+        strcpy(outBuffer, "over");
     }
     char tempBuffer[20];
 
